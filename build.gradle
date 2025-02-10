@@ -41,7 +41,10 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
-bootJar {
-    archivesBaseName='Scheduler-Job'
-    archiveFileName='Scheduler-Job.jar'
+tasks.named("bootJar") {
+    enabled = true
+}
+
+tasks.named("jar") {
+    enabled = false // ❌ jar 파일 중복 생성 방지
 }

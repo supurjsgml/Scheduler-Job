@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -Dspring.profiles.active=prod $JAVA_OPTS -jar build/libs/Scheduler-Job.jar
+web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar ./build/libs/*.jar
