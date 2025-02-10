@@ -16,8 +16,14 @@ public class JobKoreaResumeUpdaterService {
 //        System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
     	
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless"); // 백그라운드 실행 (화면 없이)
-        options.addArguments("--no-sandbox", "--disable-dev-shm-usage");
+        options.addArguments("--headless"); 				                //GUI 없이 실행 (필수)
+        options.addArguments("--no-sandbox"); 				                //보안 정책 우회 (메모리 절약)
+        options.addArguments("--disable-dev-shm-usage"); 	                //공유 메모리 비활성화 (Heroku 필수)
+        options.addArguments("--disable-gpu"); 				                //GPU 사용 비활성화
+        options.addArguments("--remote-allow-origins=*"); 	                //원격 실행 허용
+        options.addArguments("--disable-background-timer-throttling"); 		//백그라운드 작업 최소화
+        options.addArguments("--disable-backgrounding-occluded-windows"); 	//백그라운드 윈도우 최소화
+        options.addArguments("--disable-extensions"); 						//확장 프로그램 비활성화
 
         WebDriver driver = new ChromeDriver(options);
 
