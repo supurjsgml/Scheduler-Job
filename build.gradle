@@ -40,3 +40,8 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+    archivesBaseName='Scheduler-Job'
+    archiveFileName='Scheduler-Job.jar'
+}
