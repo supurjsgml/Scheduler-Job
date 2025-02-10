@@ -17,7 +17,7 @@ public class JobKoreaScheduleler {
     }
 
     //매일 1시간마다 실행
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void scheduleResumeUpdate() {
         log.info("🕒 이력서 갱신 작업 실행 중...");
         updater.updateResume();
