@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: Scheduler-Job
+#  batch:
+#    jdbc:
+#      initialize-schema: never  # ✅ JDBC 사용 안함
+#    repository:
+#      type: memory  # ✅ In-Memory JobRepository 사용 (DB 없이 실행)
+#    job:
+#      enabled: false  # 자동 실행 방지
+
+server:
+  port: ${port:8080}
+  compression:
+    enabled: true
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - local
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - dev
+      
+server:
+  port: ${port:8080}
+    
+---
+
+spring:
+  config:
+    activate:
+      on-profile:
+      - prod
+      
+server:
+  port: ${port:8080}
