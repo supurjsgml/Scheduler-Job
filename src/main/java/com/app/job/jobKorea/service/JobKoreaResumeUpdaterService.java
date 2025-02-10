@@ -14,8 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 public class JobKoreaResumeUpdaterService {
     public void updateResume() {
 //        System.setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
-    	
-        ChromeOptions options = new ChromeOptions();
+
+    	ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless"); 				                //GUI 없이 실행 (필수)
         options.addArguments("--no-sandbox"); 				                //보안 정책 우회 (메모리 절약)
         options.addArguments("--disable-dev-shm-usage"); 	                //공유 메모리 비활성화 (Heroku 필수)
