@@ -30,19 +30,25 @@ public class JobKoreaScheduleler {
     //죽지마오..
     @Scheduled(cron = "0 0/10 * * * ?")
     public void stilALive() {
-    	 webClient.get()
-         .uri("https://jcheduler-job-7b7308a3f9fd.herokuapp.com")
-         .retrieve()
-         .bodyToMono(String.class)
-         .doOnSuccess(response -> log.info("✅ Heroku Keep-Alive 성공"))
-         .doOnError(error -> log.info("저 아직 살아 있어효"))
-         .subscribe();
+    	try {
+    		webClient.get()
+    		.uri("https://jcheduler-job-7b7308a3f9fd.herokuapp.com")
+    		.retrieve()
+    		.bodyToMono(String.class)
+    		.doOnSuccess(response -> log.info("✅ Heroku Keep-Alive 성공"))
+//    		.doOnError(error -> log.info("저 아직 살아 있어효"))
+    		.subscribe();
+			
+		} catch (Exception e) {
+			log.info("저 아직 살아 있어효");
+		}
     }
     
     //죽지마오2..
     @Scheduled(cron = "0 2 * * * ?")
     public void 죽지마요ㅠㅠ() {
     	System.gc();
+    	log.info("메모리를 살려주오 ~!");
     }
     
 //    //죽지마오3..
