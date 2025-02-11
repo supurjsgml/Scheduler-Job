@@ -39,15 +39,15 @@ public class JobKoreaScheduleler {
          .subscribe();
     }
     
-//    //죽지마오2..
-//    @Scheduled(cron = "0 2 * * * ?")
-//    public void 죽지마요ㅠㅠ() {
-//    	System.gc();
-//    }
-    
-    //죽지마오3..
-    @Scheduled(cron = "0 0/1 * * * ?")
-    public void 죽지마요ㅠㅠㅜ() {
-    	System.exit(0);
+    //죽지마오2..
+    @Scheduled(cron = "0 2 * * * ?")
+    public void 죽지마요ㅠㅠ() {
+    	System.gc();
     }
+    
+//    //죽지마오3..
+//    @Scheduled(cron = "0 0/1 * * * ?")
+//    public void 죽지마요ㅠㅠㅜ() {
+//    	System.exit(0);
+//    }
 }
