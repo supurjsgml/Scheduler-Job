@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -Dspring.profiles.active=prod -jar ./build/libs/*.jar
+web: java -XX:+UseG1GC -Xmx350m -Xms256m -Dserver.port=$PORT -Dspring.profiles.active=prod -jar ./build/libs/*.jar
