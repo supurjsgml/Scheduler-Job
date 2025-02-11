@@ -1,5 +1,7 @@
 package com.app.job.jobKorea;
 
+import java.io.IOException;
+
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -19,6 +21,7 @@ public class JobKoreaScheduleler {
     
     private final WebClient webClient;
 
+    private final RestTemplate restTemplate;
 
     //매일 1시간마다 실행
     @Scheduled(cron = "0 0/30 * * * ?")
@@ -30,13 +33,11 @@ public class JobKoreaScheduleler {
     //죽지마오..
     @Scheduled(cron = "0 0/10 * * * ?")
     public void stilALive() {
-    	 webClient.get()
-         .uri("https://jcheduler-job-7b7308a3f9fd.herokuapp.com")
-         .retrieve()
-         .bodyToMono(String.class)
-         .doOnSuccess(response -> log.info("✅ Heroku Keep-Alive 성공"))
-         .doOnError(error -> log.info("저 아직 살아 있어효"))
-         .subscribe();
+    	try {
+    		restTemplate.getForEntity("https://jcheduler-job-7b7308a3f9fd.herokuapp.com", null);
+		} catch (Exception e) {
+			log.info("저 아직 살아 있어효");
+		}
     }
     
     //죽지마오2..
@@ -46,9 +47,14 @@ public class JobKoreaScheduleler {
     	log.info("메모리를 살려주오 ~!");
     }
     
-//    //죽지마오3..
-//    @Scheduled(cron = "0 0/1 * * * ?")
-//    public void 죽지마요ㅠㅠㅜ() {
-//    	System.exit(0);
-//    }
+    //죽지마오3..
+    @Scheduled(cron = "0 0 7 * * ?")
+    public void 죽지마요ㅠㅠㅜ() {
+    	log.info("🛑 애플리케이션 종료 시도...");
+        try {
+            Runtime.getRuntime().exec("kill 1");
+        } catch (IOException e) {
+            log.error("❌ 종료 실패: ", e);
+        }
+    }
 }
