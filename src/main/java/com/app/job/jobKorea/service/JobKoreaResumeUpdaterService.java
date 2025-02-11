@@ -52,7 +52,8 @@ public class JobKoreaResumeUpdaterService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            driver.quit();
+        	log.info("크롬 드라이버 : {}", driver);
+            if (null != driver) driver.quit();
         }
     }
 }
