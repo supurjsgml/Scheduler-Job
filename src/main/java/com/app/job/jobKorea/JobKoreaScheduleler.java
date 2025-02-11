@@ -35,12 +35,12 @@ public class JobKoreaScheduleler {
          .retrieve()
          .bodyToMono(String.class)
          .doOnSuccess(response -> log.info("✅ Heroku Keep-Alive 성공"))
-         .doOnError(error -> log.info("저 아직 살아 있어효 : {}", error.getMessage()))
+//         .doOnError(error -> log.info("저 아직 살아 있어효 : {}", error.getMessage()))
          .subscribe();
     }
     
     //죽지마오2..
-    @Scheduled(cron = "2 1 * * * ?")
+    @Scheduled(cron = "0 2 * * * ?")
     public void 죽지마요ㅠㅠ() {
     	System.gc();
     }
