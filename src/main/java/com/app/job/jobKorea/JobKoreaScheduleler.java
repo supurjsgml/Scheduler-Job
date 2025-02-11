@@ -35,7 +35,7 @@ public class JobKoreaScheduleler {
          .retrieve()
          .bodyToMono(String.class)
          .doOnSuccess(response -> log.info("✅ Heroku Keep-Alive 성공"))
-//         .doOnError(error -> log.info("저 아직 살아 있어효 : {}", error.getMessage()))
+         .doOnError(error -> log.info("저 아직 살아 있어효"))
          .subscribe();
     }
     
