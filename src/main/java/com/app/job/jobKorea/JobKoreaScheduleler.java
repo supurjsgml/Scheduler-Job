@@ -28,6 +28,7 @@ public class JobKoreaScheduleler {
     public void scheduleResumeUpdate() {
         log.info("🕒 이력서 갱신 작업 실행 중...");
         updater.updateResume();
+        System.gc();
     }
     
     //죽지마오..
@@ -40,21 +41,21 @@ public class JobKoreaScheduleler {
 		}
     }
     
-    //죽지마오2..
-    @Scheduled(cron = "0 2 * * * ?")
-    public void 죽지마요ㅠㅠ() {
-    	System.gc();
-    	log.info("메모리를 살려주오 ~!");
-    }
+//    //죽지마오2..
+//    @Scheduled(cron = "0 2 * * * ?")
+//    public void 죽지마요ㅠㅠ() {
+//    	System.gc();
+//    	log.info("메모리를 살려주오 ~!");
+//    }
     
-    //죽지마오3..
-    @Scheduled(cron = "0 0 7 * * ?")
-    public void 죽지마요ㅠㅠㅜ() {
-    	log.info("🛑 애플리케이션 종료 시도...");
-        try {
-            Runtime.getRuntime().exec("kill 1");
-        } catch (IOException e) {
-            log.error("❌ 종료 실패: ", e);
-        }
-    }
+//    //죽지마오3..
+//    @Scheduled(cron = "0 0 7 * * ?")
+//    public void 죽지마요ㅠㅠㅜ() {
+//    	log.info("🛑 애플리케이션 종료 시도...");
+//        try {
+//            Runtime.getRuntime().exec("kill 1");
+//        } catch (IOException e) {
+//            log.error("❌ 종료 실패: ", e);
+//        }
+//    }
 }
