@@ -24,7 +24,7 @@ public class JobKoreaScheduleler {
     private final RestTemplate restTemplate;
 
     //매일 1시간마다 실행
-    @Scheduled(cron = "0 0/30 * * * ?")
+//    @Scheduled(cron = "0 0/30 * * * ?")
     public void scheduleResumeUpdate() {
         log.info("🕒 이력서 갱신 작업 실행 중...");
         updater.updateResume();
@@ -32,7 +32,7 @@ public class JobKoreaScheduleler {
     }
     
     //죽지마오..
-    @Scheduled(cron = "0 0/10 * * * ?")
+//    @Scheduled(cron = "0 0/10 * * * ?")
     public void stilALive() {
     	try {
     		restTemplate.getForEntity("https://jcheduler-job-7b7308a3f9fd.herokuapp.com", null);
