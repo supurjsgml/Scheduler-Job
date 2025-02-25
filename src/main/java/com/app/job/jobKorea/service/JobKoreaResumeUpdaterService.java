@@ -53,7 +53,7 @@ public class JobKoreaResumeUpdaterService {
             e.printStackTrace();
         } finally {
             if (null != driver) {
-            	log.info("크롬 드라이버 초기화: {}", driver);
+            	log.info("✅ 크롬 드라이버 초기화: {}", driver);
             	driver.quit();
             }
         }
