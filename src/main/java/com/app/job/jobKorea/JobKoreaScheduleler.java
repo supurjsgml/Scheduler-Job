@@ -30,7 +30,7 @@ public class JobKoreaScheduleler {
         log.info("🕒 이력서 갱신 작업 실행 중...");
         try {
 			updater.updateResume(MemberReqDTO.builder().id("supurjsgml").pw("!sotusjf0").build());
-		} catch (InterruptedException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
         System.gc();
