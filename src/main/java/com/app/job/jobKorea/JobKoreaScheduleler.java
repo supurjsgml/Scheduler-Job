@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.app.job.dto.req.MemberReqDTO;
 import com.app.job.jobKorea.service.JobKoreaResumeUpdaterService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,11 @@ public class JobKoreaScheduleler {
 //    @Scheduled(cron = "0 0/30 * * * ?")
     public void scheduleResumeUpdate() {
         log.info("🕒 이력서 갱신 작업 실행 중...");
-        updater.updateResume();
+        try {
+			updater.updateResume(MemberReqDTO.builder().id("supurjsgml").pw("!sotusjf0").build());
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
         System.gc();
     }
     
