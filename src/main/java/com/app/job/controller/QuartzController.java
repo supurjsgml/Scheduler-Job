@@ -58,7 +58,7 @@ public class QuartzController {
 			String errMsg = "서버에러 발생 관리자에게 문의해 주세요.";
 			String errCode = "500";
 			
-			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element") || e.getMessage().contains("아이디")) {
+			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element") || e.getMessage().contains("unexpected alert open")) {
 				errCode = "9000";
 				errMsg = "로그인에 실패 하였습니다. 아이디 비밀번호를 확인해 주세요.";
 			}
