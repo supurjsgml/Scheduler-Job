@@ -41,8 +41,6 @@ public class JobKoreaResumeUpdaterService {
         pw.sendKeys(memberReqDTO.getPw());
         loginButton.click();
 
-        Thread.sleep(3000); // 로그인 후 대기
-
         // 이력서 갱신 버튼 클릭
         WebElement linkElement = driver.findElement(By.cssSelector(".status a"));
         driver.get(linkElement.getAttribute("href"));
