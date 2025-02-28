@@ -56,8 +56,6 @@ public class JobKoreaResumeUpdaterService {
             updateButton.click();
             log.info("✅ 이력서 갱신 완료");
             
-            HerokuRestarter.restartHerokuDyno();
-
         } catch (TimeoutException e) {
             log.error("❌ [TimeoutException] 요소를 찾는 중 시간이 초과됨: {}", e.getMessage());
         } catch (NoSuchElementException e) {
