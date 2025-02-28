@@ -1,18 +1,31 @@
 package com.app.job.jobKorea.service;
 
 import java.time.Duration;
-import org.openqa.selenium.*;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
+
 import com.app.job.dto.req.MemberReqDTO;
+import com.app.util.HerokuRestarter;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JobKoreaResumeUpdaterService {
+	
+	private final HerokuRestarter herokuRestarter;
 
     public void updateResume(MemberReqDTO memberReqDTO) {
         ChromeOptions options = new ChromeOptions();
@@ -46,6 +59,8 @@ public class JobKoreaResumeUpdaterService {
             WebElement updateButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("button-update")));
             updateButton.click();
             log.info("✅ 이력서 갱신 완료");
+            
+            herokuRestarter.restartHerokuDyno();
 
         } catch (TimeoutException e) {
             log.error("❌ [TimeoutException] 요소를 찾는 중 시간이 초과됨: {}", e.getMessage());
@@ -53,6 +68,7 @@ public class JobKoreaResumeUpdaterService {
             log.error("❌ [NoSuchElementException] 요소를 찾을 수 없음: {}", e.getMessage());
         } catch (WebDriverException e) {
             log.error("❌ [WebDriverException] WebDriver 세션 오류 발생: {}", e.getMessage());
+            herokuRestarter.restartHerokuDyno();
         } catch (Exception e) {
             log.error("❌ [Exception] 기타 오류 발생: {}", e.getMessage());
         } finally {
