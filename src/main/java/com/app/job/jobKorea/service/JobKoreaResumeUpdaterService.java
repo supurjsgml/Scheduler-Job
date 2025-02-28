@@ -17,16 +17,12 @@ import org.springframework.stereotype.Component;
 import com.app.job.dto.req.MemberReqDTO;
 import com.app.util.HerokuRestarter;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
-@RequiredArgsConstructor
 public class JobKoreaResumeUpdaterService {
 	
-	private final HerokuRestarter herokuRestarter;
-
     public void updateResume(MemberReqDTO memberReqDTO) {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");                    // GUI 없이 실행 (서버 환경 필수)
@@ -60,7 +56,7 @@ public class JobKoreaResumeUpdaterService {
             updateButton.click();
             log.info("✅ 이력서 갱신 완료");
             
-            herokuRestarter.restartHerokuDyno();
+            HerokuRestarter.restartHerokuDyno();
 
         } catch (TimeoutException e) {
             log.error("❌ [TimeoutException] 요소를 찾는 중 시간이 초과됨: {}", e.getMessage());
@@ -68,7 +64,7 @@ public class JobKoreaResumeUpdaterService {
             log.error("❌ [NoSuchElementException] 요소를 찾을 수 없음: {}", e.getMessage());
         } catch (WebDriverException e) {
             log.error("❌ [WebDriverException] WebDriver 세션 오류 발생: {}", e.getMessage());
-            herokuRestarter.restartHerokuDyno();
+            HerokuRestarter.restartHerokuDyno();
         } catch (Exception e) {
             log.error("❌ [Exception] 기타 오류 발생: {}", e.getMessage());
         } finally {

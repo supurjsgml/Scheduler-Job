@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 public class HerokuRestarter {
 	private static final String HEROKU_API_KEY = System.getenv("HEROKU_API_KEY");
     private static final String APP_NAME = "jcheduler-job";
-    private final WebClient webClient = WebClient.builder().baseUrl("https://api.heroku.com").build();
+    private final static WebClient webClient = WebClient.builder().baseUrl("https://api.heroku.com").build();
 
-    public void restartHerokuDyno() {
+    public static void restartHerokuDyno() {
         webClient.delete()
                 .uri("/apps/{appName}/dynos", APP_NAME)
                 .header("Authorization", "Bearer " + HEROKU_API_KEY)
