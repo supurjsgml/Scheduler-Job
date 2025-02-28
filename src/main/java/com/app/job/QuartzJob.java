@@ -25,7 +25,6 @@ public class QuartzJob extends QuartzJobBean {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        System.gc();
     }
 
 }
