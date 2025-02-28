@@ -8,17 +8,24 @@ import lombok.extern.slf4j.Slf4j;
 public class HerokuRestarter {
 	private static final String HEROKU_API_KEY = System.getenv("HEROKU_API_KEY");
     private static final String APP_NAME = "jcheduler-job";
-    private static final  WebClient webClient = WebClient.builder().baseUrl("https://api.heroku.com").build();
+    private static final WebClient webClient = WebClient.builder().baseUrl("https://api.heroku.com").build();
 
     public static void restartHerokuDyno() {
-        webClient.delete()
+        log.info("🔄 Heroku Dyno 재시작 요청...");
+
+        try {
+            webClient.delete()
                 .uri("/apps/{appName}/dynos", APP_NAME)
                 .header("Authorization", "Bearer " + HEROKU_API_KEY)
                 .header("Accept", "application/vnd.heroku+json; version=3")
                 .retrieve()
                 .bodyToMono(Void.class)
-                .doOnSuccess(response -> log.info("✅ Heroku Dyno 재시작 성공!"))
-                .doOnError(error -> log.error("❌ Heroku Dyno 재시작 실패: " + error.getMessage()))
-                .subscribe();
+                .block();  // 🔴 subscribe() 대신 block() 사용하여 즉시 실행
+
+            log.info("✅ Heroku Dyno 재시작 성공!");
+        } catch (Exception e) {
+            log.error("❌ Heroku Dyno 재시작 실패: {}", e.getMessage());
+        }
     }
+
 }
