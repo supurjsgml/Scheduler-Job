@@ -41,7 +41,7 @@ public class JobKoreaResumeUpdaterService {
             loginButton.click();
 
             // 로그인 성공 여부 확인
-//            Thread.sleep(3000); // 로그인 요청 후 일정 시간 대기 (네트워크 지연 대응) 로컬용
+            Thread.sleep(3000); // 로그인 요청 후 일정 시간 대기 (네트워크 지연 대응)
 
             WebElement linkElement = driver.findElement(By.cssSelector(".status a"));
             driver.get(linkElement.getAttribute("href"));
