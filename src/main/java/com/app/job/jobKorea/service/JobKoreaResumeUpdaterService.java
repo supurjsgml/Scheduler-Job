@@ -62,7 +62,7 @@ public class JobKoreaResumeUpdaterService {
             log.error("❌ [NoSuchElementException] 요소를 찾을 수 없음: {}", e.getMessage());
         } catch (WebDriverException e) {
             log.error("❌ [WebDriverException] WebDriver 세션 오류 발생: {}", e.getMessage());
-            HerokuRestarter.restartHerokuDyno();
+//            HerokuRestarter.restartHerokuDyno();
         } catch (Exception e) {
             log.error("❌ [Exception] 기타 오류 발생: {}", e.getMessage());
         } finally {

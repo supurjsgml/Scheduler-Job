@@ -1,6 +1,7 @@
 package com.app.job.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.quartz.SchedulerException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,7 +47,7 @@ public class QuartzController {
     }
     
     @PostMapping("/login")
-    public HashMap<String, Object> login(@RequestBody MemberReqDTO memberReqDTO) {
+    public Map<String, Object> login(@RequestBody MemberReqDTO memberReqDTO) {
     	HashMap<String, Object> result = new HashMap<>();
 
     	try {
