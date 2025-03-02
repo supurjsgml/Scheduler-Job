@@ -56,15 +56,9 @@ public class JobKoreaResumeUpdaterService {
             updateButton.click();
             log.info("✅ 이력서 갱신 완료");
             
-        } catch (TimeoutException e) {
-            log.error("❌ [TimeoutException] 요소를 찾는 중 시간이 초과됨: {}", e.getMessage());
-        } catch (NoSuchElementException e) {
-            log.error("❌ [NoSuchElementException] 요소를 찾을 수 없음: {}", e.getMessage());
-        } catch (WebDriverException e) {
-            log.error("❌ [WebDriverException] WebDriver 세션 오류 발생: {}", e.getMessage());
-//            HerokuRestarter.restartHerokuDyno();
         } catch (Exception e) {
-            log.error("❌ [Exception] 기타 오류 발생: {}", e.getMessage());
+            log.error("❌ [Exception] 오류 발생 : {}", e.getMessage());
+//            HerokuRestarter.restartHerokuDyno();
         } finally {
             if (driver != null) {
                 log.info("✅ 크롬 드라이버 종료");
