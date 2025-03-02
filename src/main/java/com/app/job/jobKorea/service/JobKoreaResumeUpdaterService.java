@@ -23,7 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobKoreaResumeUpdaterService {
 	
-    public void updateResume(MemberReqDTO memberReqDTO) {
+    public void updateResume(MemberReqDTO memberReqDTO) throws Exception {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--headless");                    // GUI 없이 실행 (서버 환경 필수)
         options.addArguments("--no-sandbox");                  // 보안 정책 우회 (메모리 절약)
@@ -59,6 +59,7 @@ public class JobKoreaResumeUpdaterService {
         } catch (Exception e) {
             log.error("❌ [Exception] 오류 발생 : {}", e.getMessage());
 //            HerokuRestarter.restartHerokuDyno();
+            throw new Exception(e.getMessage());
         } finally {
             if (driver != null) {
                 log.info("✅ 크롬 드라이버 종료");
