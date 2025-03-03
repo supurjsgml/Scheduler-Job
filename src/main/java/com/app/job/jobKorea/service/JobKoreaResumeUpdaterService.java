@@ -1,12 +1,12 @@
 package com.app.job.jobKorea.service;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -23,19 +23,46 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JobKoreaResumeUpdaterService {
 	
-    public void updateResume(MemberReqDTO memberReqDTO) throws Exception {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");                    // GUI 없이 실행 (서버 환경 필수)
-        options.addArguments("--no-sandbox");                  // 보안 정책 우회 (메모리 절약)
-        options.addArguments("--disable-dev-shm-usage");       // 공유 메모리 비활성화 (Heroku 필수)
-        options.addArguments("--disable-gpu");                 // GPU 사용 비활성화
-        options.addArguments("--remote-allow-origins=*");      // 원격 실행 허용
-        options.addArguments("--disable-extensions");          // 확장 프로그램 비활성화
-
-        WebDriver driver = new ChromeDriver(options);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
+	public Map<String, Object> updateResumeLogin(MemberReqDTO memberReqDTO) {
+		HashMap<String, Object> result = new HashMap<>();
+		try {
+			updateResume(memberReqDTO);
+		} catch (Exception e) {
+			String errMsg = "서버에러 발생 관리자에게 문의해 주세요.";
+			String errCode = "500";
+			
+			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element") || e.getMessage().contains("unexpected alert open")) {
+				errCode = "9000";
+				errMsg = "로그인에 실패 하였습니다. 아이디 비밀번호를 확인해 주세요.";
+			}
+			
+			result.put("errMsg", errMsg);
+			result.put("errCode", errCode);
+		
+			log.error(e.getMessage());
+		}
+		
+		return result;
+		
+	}
+	
+    public void updateResume(MemberReqDTO memberReqDTO) throws Exception, SessionNotCreatedException {
+    	ChromeOptions options = null;
+    	WebDriver driver = null;
+    	WebDriverWait wait = null;
+    	
         try {
+        	options = new ChromeOptions();
+        	options.addArguments("--headless");                    // GUI 없이 실행 (서버 환경 필수)
+        	options.addArguments("--no-sandbox");                  // 보안 정책 우회 (메모리 절약)
+        	options.addArguments("--disable-dev-shm-usage");       // 공유 메모리 비활성화 (Heroku 필수)
+        	options.addArguments("--disable-gpu");                 // GPU 사용 비활성화
+        	options.addArguments("--remote-allow-origins=*");      // 원격 실행 허용
+        	options.addArguments("--disable-extensions");          // 확장 프로그램 비활성화
+        	
+        	driver = new ChromeDriver(options);
+        	wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        	
             driver.get("https://www.jobkorea.co.kr/Login/Login_Tot.asp");
             log.info("✅ JobKorea 홈페이지 접속 완료");
 
@@ -56,10 +83,13 @@ public class JobKoreaResumeUpdaterService {
             updateButton.click();
             log.info("✅ 이력서 갱신 완료");
             
+        } catch (SessionNotCreatedException e) {
+        	log.error("❌ [SessionNotCreatedException] 오류 발생 : {}", e.getMessage());
+        	e.printStackTrace();
+        	HerokuRestarter.restartHerokuDyno();
         } catch (Exception e) {
-            log.error("❌ [Exception] 오류 발생 : {}", e.getMessage());
-//            HerokuRestarter.restartHerokuDyno();
-            throw new Exception(e.getMessage());
+        	log.error("❌ [Exception] 오류 발생 : {}", e.getMessage());
+        	throw new Exception(e.getMessage());
         } finally {
             if (driver != null) {
                 log.info("✅ 크롬 드라이버 종료");
