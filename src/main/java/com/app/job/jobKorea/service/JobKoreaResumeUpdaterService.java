@@ -89,6 +89,11 @@ public class JobKoreaResumeUpdaterService {
         	HerokuRestarter.restartHerokuDyno();
         } catch (Exception e) {
         	log.error("❌ [Exception] 오류 발생 : {}", e.getMessage());
+        	
+        	if (e.getMessage().contains("Command failed with code: 134")) {
+        		HerokuRestarter.restartHerokuDyno();
+			}
+        	
         	throw new Exception(e.getMessage());
         } finally {
             if (driver != null) {
