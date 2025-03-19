@@ -53,8 +53,6 @@ public class JobKoreaResumeUpdaterService {
     	WebDriverWait wait = null;
     	
         try {
-        	WebDriverManager.chromedriver().setup();
-        	
         	options = new ChromeOptions();
         	options.addArguments("--headless");                    // GUI 없이 실행 (서버 환경 필수)
         	options.addArguments("--no-sandbox");                  // 보안 정책 우회 (메모리 절약)
