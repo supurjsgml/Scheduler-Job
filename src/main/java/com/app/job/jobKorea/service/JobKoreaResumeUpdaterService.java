@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.app.job.dto.req.MemberReqDTO;
 import com.app.util.HerokuRestarter;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
@@ -52,6 +53,8 @@ public class JobKoreaResumeUpdaterService {
     	WebDriverWait wait = null;
     	
         try {
+        	WebDriverManager.chromedriver().setup();
+        	
         	options = new ChromeOptions();
         	options.addArguments("--headless");                    // GUI 없이 실행 (서버 환경 필수)
         	options.addArguments("--no-sandbox");                  // 보안 정책 우회 (메모리 절약)
