@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import com.app.job.dto.req.MemberReqDTO;
 import com.app.util.HerokuRestarter;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
