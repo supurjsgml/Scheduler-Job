@@ -90,7 +90,7 @@ public class JobKoreaResumeUpdaterService {
         } catch (Exception e) {
         	log.error("❌ [Exception] 오류 발생 : {}", e.getMessage());
         	
-        	if (e.getMessage().contains("Command failed with code: 134") || e.getMessage().contains("Unable to obtain")) {
+        	if (e.getMessage().contains("Command failed with code: 134") || e.getMessage().contains("Unable to obtain") || e.getMessage().contains("TimeoutException")) {
         		HerokuRestarter.restartHerokuDyno();
 			}
         	
