@@ -31,9 +31,9 @@ public class QuartzService {
     @PostConstruct
     public void initJobs() throws SchedulerException {
         // 이력서 갱신 Job
-        registerJob("QuartzJob", GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
+//        registerJob("QuartzJob", GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
         // KeepAlive Job
-        registerJob("StilALiveJob", GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?"); // 15분마다
+//        registerJob("StilALiveJob", GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?"); // 15분마다
     }
 
     public void registerJob(String jobName, String group, Class<? extends Job> jobClass, 
