@@ -64,7 +64,7 @@ public class JobKoreaResumeUpdaterService {
         	wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         	
             driver.get("https://www.jobkorea.co.kr/Login/Login_Tot.asp");
-            log.info("✅ JobKorea 홈페이지 접속 완료");
+            log.info("JobKorea 홈페이지 접속 완료");
 
             // 로그인
             WebElement id = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("M_ID")));
@@ -81,14 +81,14 @@ public class JobKoreaResumeUpdaterService {
 
             WebElement updateButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("button-update")));
             updateButton.click();
-            log.info("✅ 이력서 갱신 완료");
+            log.info("이력서 갱신 완료");
             
         } catch (SessionNotCreatedException e) {
-        	log.error("❌ [SessionNotCreatedException] 오류 발생 : {}", e.getMessage());
+        	log.error("[SessionNotCreatedException] 오류 발생 : {}", e.getMessage());
         	e.printStackTrace();
         	HerokuRestarter.restartHerokuDyno();
         } catch (Exception e) {
-        	log.error("❌ [Exception] 오류 발생 : {}", e.getMessage());
+        	log.error("[Exception] 오류 발생 : {}", e.getMessage());
         	
         	if (e.getMessage().contains("Command failed with code: 134") || e.getMessage().contains("Unable to obtain") || e.getMessage().contains("TimeoutException")) {
         		HerokuRestarter.restartHerokuDyno();
@@ -97,7 +97,7 @@ public class JobKoreaResumeUpdaterService {
         	throw new Exception(e.getMessage());
         } finally {
             if (driver != null) {
-                log.info("✅ 크롬 드라이버 종료");
+                log.info("크롬 드라이버 종료");
                 driver.quit();
             }
             System.gc();
