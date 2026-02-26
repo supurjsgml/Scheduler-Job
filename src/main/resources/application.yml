@@ -3,9 +3,9 @@ spring:
     name: Scheduler-Job
 #  batch:
 #    jdbc:
-#      initialize-schema: never  # ✅ JDBC 사용 안함
+#      initialize-schema: never  # JDBC 사용 안함
 #    repository:
-#      type: memory  # ✅ In-Memory JobRepository 사용 (DB 없이 실행)
+#      type: memory  # In-Memory JobRepository 사용 (DB 없이 실행)
 #    job:
 #      enabled: false  # 자동 실행 방지
 
