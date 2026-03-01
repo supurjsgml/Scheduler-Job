@@ -46,7 +46,7 @@ public class JobKoreaResumeUpdaterService {
 		
 	}
 	
-    public void updateResume(MemberReqDTO memberReqDTO) throws Exception, SessionNotCreatedException {
+    public void updateResume(MemberReqDTO memberReqDTO) {
     	ChromeOptions options = null;
     	WebDriver driver = null;
     	WebDriverWait wait = null;
@@ -94,7 +94,7 @@ public class JobKoreaResumeUpdaterService {
         		HerokuRestarter.restartHerokuDyno();
 			}
         	
-        	throw new Exception(e.getMessage());
+        	throw new RuntimeException(e.getMessage());
         } finally {
             if (driver != null) {
                 log.info("크롬 드라이버 종료");

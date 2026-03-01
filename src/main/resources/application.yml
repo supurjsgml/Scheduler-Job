@@ -58,7 +58,8 @@ server:
 management:
   otlp:  
     metrics:  
-      export:  
+      export: 
+        enabled: true 
         url: https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp/v1/metrics
         headers:  
           Authorization: "Basic MTUzOTAzODpnbGNfZXlKdklqb2lNVFk0TURrNU1DSXNJbTRpT2lKelkyaGxaSFZzWlhJdGFtOWlMWE5qYUdWa2RXeGxjaTFxYjJJaUxDSnJJam9pT0RVd1ducHJTbFZpZVRSQ00yNHdlVFprY1dzNE9VRTNJaXdpYlNJNmV5SnlJam9pZFhNaWZYMD0="

@@ -23,8 +23,10 @@ public class StilALiveJob extends QuartzJobBean {
         try {
             restTemplate.getForEntity("https://jcheduler-job-7b7308a3f9fd.herokuapp.com", null);
         } catch (Exception e) {
-            log.info("저 아직 살아 있어효");
-        }
+
+        } finally {
+        	log.info("저 아직 살아 있어효");
+		}
         
         System.gc();
     }
