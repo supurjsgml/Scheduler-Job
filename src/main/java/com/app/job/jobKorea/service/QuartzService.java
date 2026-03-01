@@ -15,29 +15,35 @@ import org.springframework.stereotype.Service;
 
 import com.app.job.QuartzJob;
 import com.app.job.StilALiveJob;
+import com.app.quartzListener.JobExecutionMetricsListener;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@AllArgsConstructor
 public class QuartzService {
 
     private static final String GROUP_NAME = "group1";
 
-    @Autowired
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
+    
+    private final MeterRegistry registry;
 
     @PostConstruct
     public void initJobs() throws SchedulerException {
+    	scheduler.getListenerManager().addJobListener(new JobExecutionMetricsListener(registry));
+    	
         // 이력서 갱신 Job
         registerJob("QuartzJob", GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
         // KeepAlive Job
         registerJob("StilALiveJob", GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?"); // 15분마다
     }
 
-    public void registerJob(String jobName, String group, Class<? extends Job> jobClass, 
-                            String triggerName, String cronExpression) throws SchedulerException {
+    public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression) throws SchedulerException {
         JobDetail jobDetail = JobBuilder.newJob(jobClass)
                 .withIdentity(jobName, group)
                 .storeDurably()

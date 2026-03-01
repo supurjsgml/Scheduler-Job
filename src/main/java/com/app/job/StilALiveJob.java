@@ -18,7 +18,7 @@ public class StilALiveJob extends QuartzJobBean {
 
     @Override
     protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-        log.info("🕒 StilALiveJob 작업 실행 중...");
+        log.info("StilALiveJob 작업 실행 중...");
         
         try {
             restTemplate.getForEntity("https://jcheduler-job-7b7308a3f9fd.herokuapp.com", null);
