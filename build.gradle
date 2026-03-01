@@ -1,7 +1,7 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.4.2'
-	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.springframework.boot' version '3.5.11'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.app'
@@ -54,5 +54,5 @@ tasks.named("bootJar") {
 }
 
 tasks.named("jar") {
-    enabled = false // ❌ jar 파일 중복 생성 방지
+    enabled = false //jar 파일 중복 생성 방지
 }
