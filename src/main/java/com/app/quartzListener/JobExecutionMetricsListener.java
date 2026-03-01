@@ -28,7 +28,7 @@ public class JobExecutionMetricsListener implements JobListener {
         String status  = jobException == null ? "success" : "failed";  
 
         Counter.builder("quartz.job.executed")  
-            .tag("job", jobName)  
+            .tag("job_name", jobName)  
             .tag("status", status)  
             .register(registry)  
             .increment();  
