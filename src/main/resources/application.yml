@@ -9,6 +9,20 @@ spring:
 #    job:
 #      enabled: false  # 자동 실행 방지
 
+management:
+  otlp:  
+    metrics:  
+      export:  
+        enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: prometheus, health, info
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
 server:
   port: ${port:8080}
   compression:
@@ -23,8 +37,10 @@ spring:
 ---
 
 spring:
-  profiles:
-    active: dev
+  config:
+    activate:
+      on-profile:
+      - dev
       
 server:
   port: ${port:8080}
@@ -32,8 +48,10 @@ server:
 ---
 
 spring:
-  profiles:
-    active: prod
+  config:
+    activate:
+      on-profile:
+      - prod
       
 server:
   port: ${port:8080}
