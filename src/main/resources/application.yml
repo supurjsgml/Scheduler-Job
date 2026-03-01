@@ -31,16 +31,16 @@ server:
 ---
 
 spring:
-  profiles:
-    active: local
+  config:
+    activate:
+      on-profile: local
 
 ---
 
 spring:
   config:
     activate:
-      on-profile:
-      - dev
+      on-profile: dev
       
 server:
   port: ${port:8080}
@@ -50,8 +50,7 @@ server:
 spring:
   config:
     activate:
-      on-profile:
-      - prod
+      on-profile: prod
       
 server:
   port: ${port:8080}
