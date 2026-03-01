@@ -1,12 +1,14 @@
 package com.app.quartzListener;
 
-import io.micrometer.core.instrument.Counter;  
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
+import org.quartz.JobListener;
+
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;  
 
-import org.quartz.*;  
-
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JobExecutionMetricsListener implements JobListener {  
 
     private final MeterRegistry registry;  
