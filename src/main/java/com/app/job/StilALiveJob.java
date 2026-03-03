@@ -27,7 +27,5 @@ public class StilALiveJob extends QuartzJobBean {
         } finally {
         	log.info("저 아직 살아 있어효");
 		}
-        
-        System.gc();
     }
 }

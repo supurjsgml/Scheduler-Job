@@ -33,7 +33,6 @@ public class JobKoreaScheduleler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        System.gc();
     }
     
     //죽지마오..
@@ -49,7 +48,6 @@ public class JobKoreaScheduleler {
 //    //죽지마오2..
 //    @Scheduled(cron = "0 2 * * * ?")
 //    public void 죽지마요ㅠㅠ() {
-//    	System.gc();
 //    	log.info("메모리를 살려주오 ~!");
 //    }
     

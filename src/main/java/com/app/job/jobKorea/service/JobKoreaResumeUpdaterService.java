@@ -100,7 +100,6 @@ public class JobKoreaResumeUpdaterService {
                 log.info("크롬 드라이버 종료");
                 driver.quit();
             }
-            System.gc();
         }
     }
 }
