@@ -59,7 +59,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, health, info, threaddump
+        include: prometheus, health, info, threaddump, threads
   prometheus:
     metrics:
       export:
