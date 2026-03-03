@@ -14,14 +14,6 @@ management:
     metrics:  
       export:  
         enabled: false
-  endpoints:
-    web:
-      exposure:
-        include: prometheus, health, info
-  prometheus:
-    metrics:
-      export:
-        enabled: true
 
 server:
   port: ${port:8080}
@@ -67,7 +59,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, health, info
+        include: prometheus, health, info, threaddump
   prometheus:
     metrics:
       export:
