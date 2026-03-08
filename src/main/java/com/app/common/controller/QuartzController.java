@@ -1,4 +1,4 @@
-package com.app.job.controller;
+package com.app.common.controller;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.job.dto.req.MemberReqDTO;
+import com.app.job.jobKorea.JobKoreaUserResumeJob;
+import com.app.job.jobKorea.dto.req.MemberReqDTO;
+import com.app.job.jobKorea.service.JobKoreaRegistryService;
 import com.app.job.jobKorea.service.JobKoreaResumeUpdaterService;
-import com.app.job.jobKorea.service.QuartzService;
+import com.app.job.quartz.service.QuartzService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,8 @@ public class QuartzController {
     private final QuartzService quartzService;
     
     private final JobKoreaResumeUpdaterService updater;
+    
+    private final JobKoreaRegistryService jobKoreaRegistryService;
 
     @PostMapping("/pause")
     public String pauseJob(@RequestParam("triggerName") String triggerName) throws SchedulerException {
@@ -51,9 +55,26 @@ public class QuartzController {
     	HashMap<String, Object> result = new HashMap<>();
 
     	try {
+    		//난 저장소가 없어요
+    		jobKoreaRegistryService.registerUser(memberReqDTO);
+    		
+    		Map<String, Object> jobDataMap = new HashMap<>();
+    		jobDataMap.put("userId", memberReqDTO.getId());
+    		
+    		//유저용 잡 등록
+//			quartzService.registerJob(memberReqDTO.getId(), "userGroup", JobKoreaUserResumeJob.class, "JobKoreaUserResumeJob", "0 0/30 * * * ?");
+			quartzService.registerJob(memberReqDTO.getId(), "userGroup", JobKoreaUserResumeJob.class, "JobKoreaUserResumeJob", "0/10 * * * * ?", jobDataMap);
+		} catch (SchedulerException e) {
+			log.error("JobKoreaRegistryService 잡등록 터졌어 ERROR : ");
+			e.printStackTrace();
+		}
+    	
+    	try {
     		updater.updateResume(memberReqDTO);
+    		
     		//토큰생성
     		memberReqDTO.setToken("test");
+    		
     		result.put("token", memberReqDTO.getToken());
 		} catch (Exception e) {
 			String errMsg = "서버에러 발생 관리자에게 문의해 주세요.";

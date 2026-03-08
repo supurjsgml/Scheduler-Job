@@ -1,4 +1,4 @@
-package com.app.quartzListener;
+package com.app.job.quartz.quartzListener;
 
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

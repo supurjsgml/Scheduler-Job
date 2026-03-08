@@ -1,4 +1,4 @@
-package com.app.job.dto.req;
+package com.app.job.jobKorea.dto.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

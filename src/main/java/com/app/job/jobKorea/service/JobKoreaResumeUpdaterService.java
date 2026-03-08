@@ -14,7 +14,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.stereotype.Component;
 
-import com.app.job.dto.req.MemberReqDTO;
+import com.app.job.jobKorea.dto.req.MemberReqDTO;
 import com.app.util.HerokuRestarter;
 
 import lombok.extern.slf4j.Slf4j;

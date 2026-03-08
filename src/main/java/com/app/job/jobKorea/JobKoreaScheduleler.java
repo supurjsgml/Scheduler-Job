@@ -1,13 +1,10 @@
 package com.app.job.jobKorea;
 
-import java.io.IOException;
-
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import com.app.job.dto.req.MemberReqDTO;
+import com.app.job.jobKorea.dto.req.MemberReqDTO;
 import com.app.job.jobKorea.service.JobKoreaResumeUpdaterService;
 
 import lombok.RequiredArgsConstructor;
@@ -27,9 +24,9 @@ public class JobKoreaScheduleler {
     //매일 1시간마다 실행
 //    @Scheduled(cron = "0 0/30 * * * ?")
     public void scheduleResumeUpdate() {
-        log.info("🕒 이력서 갱신 작업 실행 중...");
+        log.info("이력서 갱신 작업 실행 중...");
         try {
-			updater.updateResume(MemberReqDTO.builder().id("supurjsgml").pw("!sotusjf0").build());
+			updater.updateResume(MemberReqDTO.builder().id("").pw("").build());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
