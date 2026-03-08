@@ -16,7 +16,7 @@ management:
         enabled: false
 
 server:
-  port: ${port:8080}
+  port: ${port:8081}
   compression:
     enabled: true
 
@@ -35,7 +35,7 @@ spring:
       on-profile: dev
       
 server:
-  port: ${port:8080}
+  port: ${port:8081}
     
 ---
 
@@ -45,7 +45,7 @@ spring:
       on-profile: prod
       
 server:
-  port: ${port:8080}
+  port: ${port:80}
   
 management:
   otlp:  

@@ -32,8 +32,8 @@ public class QuartzController {
     private final JobKoreaRegistryService jobKoreaRegistryService;
 
     @PostMapping("/pause")
-    public String pauseJob(@RequestParam("triggerName") String triggerName) throws SchedulerException {
-        quartzService.pauseJob(triggerName);
+    public String pauseJob(String triggerName, String groupName) throws SchedulerException {
+        quartzService.pauseJob(triggerName, groupName);
         return "Job paused: " + triggerName;
     }
 
@@ -58,12 +58,13 @@ public class QuartzController {
     		//난 저장소가 없어요
     		jobKoreaRegistryService.registerUser(memberReqDTO);
     		
+    		String userId = memberReqDTO.getId();
+    		
     		Map<String, Object> jobDataMap = new HashMap<>();
-    		jobDataMap.put("userId", memberReqDTO.getId());
+    		jobDataMap.put("userId", userId);
     		
     		//유저용 잡 등록
-//			quartzService.registerJob(memberReqDTO.getId(), "userGroup", JobKoreaUserResumeJob.class, "JobKoreaUserResumeJob", "0 0/30 * * * ?");
-			quartzService.registerJob(memberReqDTO.getId(), "userGroup", JobKoreaUserResumeJob.class, "JobKoreaUserResumeJob", "0/10 * * * * ?", jobDataMap);
+			quartzService.registerJob(userId, "userGroup", JobKoreaUserResumeJob.class, userId, "0 0/30 * * * ?", jobDataMap);
 		} catch (SchedulerException e) {
 			log.error("JobKoreaRegistryService 잡등록 터졌어 ERROR : ");
 			e.printStackTrace();

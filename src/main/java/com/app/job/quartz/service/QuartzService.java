@@ -3,6 +3,7 @@ package com.app.job.quartz.service;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
 import org.quartz.Job;
@@ -80,9 +81,9 @@ public class QuartzService {
     }
 
     // 트리거 일시 중지
-    public void pauseJob(String triggerName) {
+    public void pauseJob(String triggerName, String groupName) {
         try {
-            TriggerKey triggerKey = new TriggerKey(triggerName, GROUP_NAME);
+            TriggerKey triggerKey = new TriggerKey(triggerName, StringUtils.isBlank(groupName) ? GROUP_NAME : groupName);
             scheduler.pauseTrigger(triggerKey);
             log.info("트리거가 일시 중지되었습니다: {}", triggerName);
         } catch (SchedulerException e) {
