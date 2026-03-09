@@ -160,7 +160,7 @@ public class QuartzService {
         				
         				jobs.add(QuartzLiveJobsResponseDto.builder()
         						.jobName(jobName)
-//        						.groupName(group)
+        						.groupName(group)
         						.nextFireTime(DateUtils.localDateTimeToString(DateUtils.toLocalDateTime(trigger.getNextFireTime())))
         						.status(state.name())
         						.build());
