@@ -48,7 +48,7 @@ public class QuartzService {
     }
 
     public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression) throws SchedulerException {
-    	registerJob(cronExpression, cronExpression, jobClass, cronExpression, cronExpression, null);
+    	registerJob(jobName, group, jobClass, triggerName, cronExpression, null);
     }
     
     public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression, Map<String, Object> jobDataMap) throws SchedulerException {
