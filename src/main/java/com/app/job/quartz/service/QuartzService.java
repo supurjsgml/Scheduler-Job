@@ -98,9 +98,9 @@ public class QuartzService {
     }
 
     // 트리거 재개
-    public void resumeJob(String triggerName) {
+    public void resumeJob(String triggerName, String groupName) {
         try {
-            TriggerKey triggerKey = new TriggerKey(triggerName, GROUP_NAME);
+            TriggerKey triggerKey = new TriggerKey(triggerName, StringUtils.isBlank(groupName) ? GROUP_NAME : groupName);
             scheduler.resumeTrigger(triggerKey);
             log.info("트리거가 재개되었습니다: {}", triggerName);
         } catch (SchedulerException e) {
@@ -110,12 +110,14 @@ public class QuartzService {
     }
 
     // 트리거 스케줄 변경
-    public void rescheduleJob(String triggerName, String jobName, String newCronExpression) {
+    public void rescheduleJob(String triggerName, String groupName, String jobName, String newCronExpression) {
         try {
+        	groupName = StringUtils.isBlank(groupName) ? GROUP_NAME : groupName;
+        	
             CronScheduleBuilder.cronSchedule(newCronExpression); // 크론 유효성 체크
-            TriggerKey triggerKey = new TriggerKey(triggerName, GROUP_NAME);
+            TriggerKey triggerKey = new TriggerKey(triggerName, groupName);
             CronTrigger newTrigger = TriggerBuilder.newTrigger()
-                    .forJob(jobName, GROUP_NAME)
+                    .forJob(jobName, groupName)
                     .withIdentity(triggerKey)
                     .withSchedule(CronScheduleBuilder.cronSchedule(newCronExpression))
                     .build();
@@ -158,7 +160,7 @@ public class QuartzService {
         				
         				jobs.add(QuartzLiveJobsResponseDto.builder()
         						.jobName(jobName)
-        						.groupName(group)
+//        						.groupName(group)
         						.nextFireTime(DateUtils.localDateTimeToString(DateUtils.toLocalDateTime(trigger.getNextFireTime())))
         						.status(state.name())
         						.build());

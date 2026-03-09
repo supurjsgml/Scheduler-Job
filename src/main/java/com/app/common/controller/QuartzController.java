@@ -41,15 +41,14 @@ public class QuartzController {
     }
 
     @PostMapping("/resume")
-    public String resumeJob(@RequestParam("triggerName") String triggerName) throws SchedulerException {
-        quartzService.resumeJob(triggerName);
+    public String resumeJob(String triggerName, String groupName) throws SchedulerException {
+        quartzService.resumeJob(triggerName, groupName);
         return "Job resumed: " + triggerName;
     }
 
     @PostMapping("/reschedule")
-    public String rescheduleJob(@RequestParam("triggerName") String triggerName, @RequestParam("jobName") String jobName, 
-    		@RequestParam("cron") String cron) throws SchedulerException {
-        quartzService.rescheduleJob(triggerName, jobName, cron);
+    public String rescheduleJob(String triggerName, String groupName, String jobName, String cron) throws SchedulerException {
+        quartzService.rescheduleJob(triggerName, groupName, jobName, cron);
         return "Job rescheduled to: " + cron;
     }
     
