@@ -1,9 +1,11 @@
 package com.app.common.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.quartz.SchedulerException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import com.app.job.jobKorea.JobKoreaUserResumeJob;
 import com.app.job.jobKorea.dto.req.MemberReqDTO;
 import com.app.job.jobKorea.service.JobKoreaRegistryService;
 import com.app.job.jobKorea.service.JobKoreaResumeUpdaterService;
+import com.app.job.quartz.dto.res.QuartzLiveJobsResponseDto;
 import com.app.job.quartz.service.QuartzService;
 
 import lombok.RequiredArgsConstructor;
@@ -91,6 +94,12 @@ public class QuartzController {
 			log.error(e.getMessage());
 			e.getStackTrace();
 		}
+    	
     	return result;
+    }
+    
+    @GetMapping("/stil/alive")
+    public List<QuartzLiveJobsResponseDto> getAllJobs() {
+    	return quartzService.getAllJobs();
     }
 }

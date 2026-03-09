@@ -1,5 +1,7 @@
 package com.app.job.quartz.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -15,9 +17,12 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.stereotype.Service;
 
+import com.app.common.utils.DateUtils;
 import com.app.job.quartz.QuartzJob;
+import com.app.job.quartz.dto.res.QuartzLiveJobsResponseDto;
 import com.app.job.quartz.quartzListener.JobExecutionMetricsListener;
 import com.app.job.stilALive.StilALiveJob;
 
@@ -124,5 +129,47 @@ public class QuartzService {
             log.error("잘못된 크론 표현식: {}", newCronExpression);
             throw new IllegalArgumentException("유효하지 않은 크론 표현식: " + newCronExpression);
         }
+    }
+    
+    /**
+     * 현재 존재하는 job 조회
+     * @return
+     * @throws SchedulerException
+     * @author guney
+     * @date 2026. 3. 9.
+     */
+    public List<QuartzLiveJobsResponseDto> getAllJobs() {
+        List<QuartzLiveJobsResponseDto> jobs = new ArrayList<>();
+
+        try {
+        	// 모든 JobGroup을 순회
+        	for (String groupName : scheduler.getJobGroupNames()) {
+        		// 그룹 내 모든 JobKey 조회
+        		for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) {
+        			
+        			String jobName = jobKey.getName();
+        			String group = jobKey.getGroup();
+        			
+        			// 해당 잡에 연결된 트리거들 조회
+        			List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+        			
+        			for (Trigger trigger : triggers) {
+        				Trigger.TriggerState state = scheduler.getTriggerState(trigger.getKey());
+        				
+        				jobs.add(QuartzLiveJobsResponseDto.builder()
+        						.jobName(jobName)
+        						.groupName(group)
+        						.nextFireTime(DateUtils.localDateTimeToString(DateUtils.toLocalDateTime(trigger.getNextFireTime())))
+        						.status(state.name())
+        						.build());
+        			}
+        		}
+        	}
+			
+		} catch (SchedulerException e) {
+			log.error("QuartzService getAllJobs ERROR : {}", e);
+		}
+        
+        return jobs;
     }
 }
