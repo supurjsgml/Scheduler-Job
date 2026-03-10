@@ -52,7 +52,7 @@ public class QuartzService {
     	scheduler.getListenerManager().addJobListener(new JobExecutionMetricsListener(registry));
     	
         // 이력서 갱신 Job
-//        registerJob("QuartzJob", QUARTZ_GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
+        registerJob("QuartzJob", QUARTZ_GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
         // KeepAlive Job
         registerJob("StilALiveJob", QUARTZ_GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?");   // 15분마다
     }
