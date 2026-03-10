@@ -12,16 +12,22 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.app.job.jobKorea.dto.req.MemberReqDTO;
 import com.app.util.HerokuRestarter;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JobKoreaResumeUpdaterService {
+	
+	@Value("${spring.app.activate.on-profile:local}")
+	private String profile;
 	
 	public Map<String, Object> updateResumeLogin(MemberReqDTO memberReqDTO) {
 		HashMap<String, Object> result = new HashMap<>();
@@ -59,10 +65,14 @@ public class JobKoreaResumeUpdaterService {
         	options.addArguments("--disable-gpu");                          //GPU 사용 비활성화
         	options.addArguments("--remote-allow-origins=*");               //원격 실행 허용
         	options.addArguments("--disable-extensions");                   //확장 프로그램 비활성화
-        	options.addArguments("--remote-debugging-pipe"); 	            //소켓 대신 파이프 통신 사용
-        	options.addArguments("--single-process");        				//크롬 단일 프로세스로 실행
         	options.addArguments("--blink-settings=imagesEnabled=false"); 	//이미지 로딩 방지
         	options.addArguments("--disable-software-rasterizer");			//그래픽 처리시 CPU가 몸빵하라
+
+        	//운영만
+        	if ("prod".equals(profile)) {
+        		options.addArguments("--remote-debugging-pipe"); 	            //소켓 대신 파이프 통신 사용
+        		options.addArguments("--single-process");        				//크롬 단일 프로세스로 실행
+			}
         	
         	driver = new ChromeDriver(options);
         	wait = new WebDriverWait(driver, Duration.ofSeconds(10));

@@ -20,6 +20,14 @@ server:
   compression:
     enabled: true
 
+jasypt:
+  encryptor:
+    password: 깔깔
+    
+풀어-보거라:
+  훌랠릴: 끄얼끄얼
+  랠룰: 낄낄
+
 ---
 
 spring:
@@ -64,3 +72,11 @@ management:
     metrics:
       export:
         enabled: true
+
+jasypt:
+  encryptor:
+    password: ${KKAL_KKAL}
+
+풀어-보거라:
+  훌랠릴: ENC(tNWzSG9f9HShTfSHxqTqS0amKWLZLAoimVJvIQwvMv3oT6qPuN/xUexCWzhg1rQ4)
+  랠룰: ENC(m/WC78PJYkkrKbGYko0ADpVKFvOrsM9rrWiDrnLkOGeyQ7KNXwm7BWOMBFfRLNwB)
