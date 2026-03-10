@@ -53,14 +53,16 @@ public class JobKoreaResumeUpdaterService {
     	
         try {
         	options = new ChromeOptions();
-        	options.addArguments("--headless");                    // GUI 없이 실행 (서버 환경 필수)
-        	options.addArguments("--no-sandbox");                  // 보안 정책 우회 (메모리 절약)
-        	options.addArguments("--disable-dev-shm-usage");       // 공유 메모리 비활성화 (Heroku 필수)
-        	options.addArguments("--disable-gpu");                 // GPU 사용 비활성화
-        	options.addArguments("--remote-allow-origins=*");      // 원격 실행 허용
-        	options.addArguments("--disable-extensions");          // 확장 프로그램 비활성화
-        	options.addArguments("--remote-debugging-pipe"); 	   // 소켓 대신 파이프 통신 사용
-        	options.addArguments("--disable-software-rasterizer");
+        	options.addArguments("--headless");                             //GUI 없이 실행 (서버 환경 필수)
+        	options.addArguments("--no-sandbox");                           //보안 정책 우회 (메모리 절약)
+        	options.addArguments("--disable-dev-shm-usage");                //공유 메모리 비활성화 (Heroku 필수)
+        	options.addArguments("--disable-gpu");                          //GPU 사용 비활성화
+        	options.addArguments("--remote-allow-origins=*");               //원격 실행 허용
+        	options.addArguments("--disable-extensions");                   //확장 프로그램 비활성화
+        	options.addArguments("--remote-debugging-pipe"); 	            //소켓 대신 파이프 통신 사용
+        	options.addArguments("--single-process");        				//크롬 단일 프로세스로 실행
+        	options.addArguments("--blink-settings=imagesEnabled=false"); 	//이미지 로딩 방지
+        	options.addArguments("--disable-software-rasterizer");			//그래픽 처리시 CPU가 몸빵하라
         	
         	driver = new ChromeDriver(options);
         	wait = new WebDriverWait(driver, Duration.ofSeconds(10));
