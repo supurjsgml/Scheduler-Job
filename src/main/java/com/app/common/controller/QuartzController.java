@@ -65,8 +65,8 @@ public class QuartzController {
     		Map<String, Object> jobDataMap = new HashMap<>();
     		jobDataMap.put("userId", userId);
     		
-    		//유저용 잡 등록
-			quartzService.registerJob(userId, userId.concat(QuartzService.GROUP_NAME), JobKoreaUserResumeJob.class, userId, "* 0/30 * * * ?", jobDataMap);
+    		//유저용 잡 등록 최초 실행 기준으로 30분마다
+			quartzService.registerJob(userId, userId.concat(QuartzService.GROUP_NAME), JobKoreaUserResumeJob.class, userId, null, 30 * 60 * 1000L, jobDataMap);
 		} catch (SchedulerException e) {
 			log.error("JobKoreaRegistryService 잡등록 터졌어 ERROR : ");
 			e.printStackTrace();

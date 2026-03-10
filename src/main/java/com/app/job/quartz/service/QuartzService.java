@@ -57,28 +57,81 @@ public class QuartzService {
         registerJob("StilALiveJob", QUARTZ_GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?");   // 15분마다
     }
 
+    /**
+     * cron 기반 job 생성
+     * @param jobName
+     * @param group
+     * @param jobClass
+     * @param triggerName
+     * @param cronExpression
+     * @throws SchedulerException
+     * @author guney
+     * @date 2026. 3. 11.
+     */
     public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression) throws SchedulerException {
-    	registerJob(jobName, group, jobClass, triggerName, cronExpression, null);
+    	registerJob(jobName, group, jobClass, triggerName, cronExpression, null, null);
     }
     
-    public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression, Map<String, Object> jobDataMap) throws SchedulerException {
+    
+    /**
+     * 고정 시간 job 생성
+     * @param jobName
+     * @param group
+     * @param jobClass
+     * @param triggerName
+     * @param intervalInMillis
+     * @throws SchedulerException
+     * @author guney
+     * @date 2026. 3. 11.
+     */
+    public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, Long intervalInMillis) throws SchedulerException {
+    	registerJob(jobName, group, jobClass, triggerName, null, intervalInMillis, null);
+    }
+    
+    /**
+     * 필요하면 다넘기던제 !!!
+     * @param jobName
+     * @param group
+     * @param jobClass
+     * @param triggerName
+     * @param cronExpression
+     * @param intervalInMillis
+     * @param jobDataMap
+     * @throws SchedulerException
+     * @author guney
+     * @date 2026. 3. 11.
+     */
+    public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression, Long intervalInMillis, Map<String, Object> jobDataMap) throws SchedulerException {
     	
-    	JobBuilder jobBuilder = JobBuilder.newJob(jobClass)
-                .withIdentity(jobName, group);
+    	//job 생성
+    	JobBuilder jobBuilder = JobBuilder.newJob(jobClass).withIdentity(jobName, group);
+    	
+    	//생성될 job 정보 메모리에 보관
+        JobDetail jobDetail = jobBuilder.storeDurably().build();
 
         //JobDataMap에 데이터가 있다면 SET
         if (ObjectUtils.isNotEmpty(jobDataMap)) {
             jobBuilder.usingJobData(new org.quartz.JobDataMap(jobDataMap));
         }
 
-        JobDetail jobDetail = jobBuilder.storeDurably().build();
-    	
-
-        Trigger trigger = TriggerBuilder.newTrigger()
+        TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
-                .withIdentity(triggerName, group)
-                .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression))
-                .build();
+                .withIdentity(triggerName, group);
+
+        //cronExpression이 있으면 크론 트리거 생성
+        if (StringUtils.isNotBlank(cronExpression)) {
+            triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(cronExpression));
+        } 
+        
+        //interval이 있으면 fixedRate 트리거 생성
+        else if (intervalInMillis != null) {
+            triggerBuilder.withSchedule(org.quartz.SimpleScheduleBuilder.simpleSchedule()
+                    .withIntervalInMilliseconds(intervalInMillis)
+                    .repeatForever());
+        }
+
+        //최종 트리거 생성
+        Trigger trigger = triggerBuilder.build();
         
         //이미 같은 이름의 잡이 있다면 삭제 후 등록 (중복 방지)
         JobKey jobKey = new JobKey(jobName, group);
