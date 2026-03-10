@@ -3,7 +3,6 @@ package com.app.job.quartz.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,9 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class QuartzService {
 
-	public static final String GROUP_NAME = ":group";
-	
-	private static final String QUARTZ_GROUP_NAME = "quartz:group";
+	public static final String QUARTZ_GROUP_NAME = "quartz:group";
 
     private final Scheduler scheduler;
     
@@ -247,7 +244,7 @@ public class QuartzService {
     	Trigger trigger = null;
     	Trigger.TriggerState state = TriggerState.NONE;
     	
-    	JobKey jobKey = JobKey.jobKey(userId, userId.concat(GROUP_NAME));
+    	JobKey jobKey = JobKey.jobKey(userId, QUARTZ_GROUP_NAME);
     	
     	try {
 			scheduler.getTriggersOfJob(jobKey);
