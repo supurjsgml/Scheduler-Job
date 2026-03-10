@@ -59,6 +59,8 @@ public class JobKoreaResumeUpdaterService {
         	options.addArguments("--disable-gpu");                 // GPU 사용 비활성화
         	options.addArguments("--remote-allow-origins=*");      // 원격 실행 허용
         	options.addArguments("--disable-extensions");          // 확장 프로그램 비활성화
+        	options.addArguments("--remote-debugging-pipe"); 	   // 소켓 대신 파이프 통신 사용
+        	options.addArguments("--disable-software-rasterizer");
         	
         	driver = new ChromeDriver(options);
         	wait = new WebDriverWait(driver, Duration.ofSeconds(10));
