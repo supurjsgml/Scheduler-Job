@@ -3,6 +3,7 @@ package com.app.job.quartz.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,10 +16,12 @@ import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.quartz.Trigger.TriggerState;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.app.common.utils.DateUtils;
 import com.app.job.quartz.QuartzJob;
@@ -36,7 +39,9 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 public class QuartzService {
 
-    private static final String GROUP_NAME = "group1";
+	public static final String GROUP_NAME = ":group";
+	
+	private static final String QUARTZ_GROUP_NAME = "quartz:group";
 
     private final Scheduler scheduler;
     
@@ -47,9 +52,9 @@ public class QuartzService {
     	scheduler.getListenerManager().addJobListener(new JobExecutionMetricsListener(registry));
     	
         // 이력서 갱신 Job
-        registerJob("QuartzJob", GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
+//        registerJob("QuartzJob", QUARTZ_GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
         // KeepAlive Job
-        registerJob("StilALiveJob", GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?");   // 15분마다
+        registerJob("StilALiveJob", QUARTZ_GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?");   // 15분마다
     }
 
     public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression) throws SchedulerException {
@@ -88,7 +93,7 @@ public class QuartzService {
     // 트리거 일시 중지
     public void pauseJob(String triggerName, String groupName) {
         try {
-            TriggerKey triggerKey = new TriggerKey(triggerName, StringUtils.isBlank(groupName) ? GROUP_NAME : groupName);
+            TriggerKey triggerKey = new TriggerKey(triggerName, StringUtils.isBlank(groupName) ? QUARTZ_GROUP_NAME : groupName);
             scheduler.pauseTrigger(triggerKey);
             log.info("트리거가 일시 중지되었습니다: {}", triggerName);
         } catch (SchedulerException e) {
@@ -100,7 +105,7 @@ public class QuartzService {
     // 트리거 재개
     public void resumeJob(String triggerName, String groupName) {
         try {
-            TriggerKey triggerKey = new TriggerKey(triggerName, StringUtils.isBlank(groupName) ? GROUP_NAME : groupName);
+            TriggerKey triggerKey = new TriggerKey(triggerName, StringUtils.isBlank(groupName) ? QUARTZ_GROUP_NAME : groupName);
             scheduler.resumeTrigger(triggerKey);
             log.info("트리거가 재개되었습니다: {}", triggerName);
         } catch (SchedulerException e) {
@@ -112,7 +117,7 @@ public class QuartzService {
     // 트리거 스케줄 변경
     public void rescheduleJob(String triggerName, String groupName, String jobName, String newCronExpression) {
         try {
-        	groupName = StringUtils.isBlank(groupName) ? GROUP_NAME : groupName;
+        	groupName = StringUtils.isBlank(groupName) ? QUARTZ_GROUP_NAME : groupName;
         	
             CronScheduleBuilder.cronSchedule(newCronExpression); // 크론 유효성 체크
             TriggerKey triggerKey = new TriggerKey(triggerName, groupName);
@@ -135,7 +140,7 @@ public class QuartzService {
     
     /**
      * 현재 존재하는 job 조회
-     * @return
+     * @return List<QuartzLiveJobsResponseDto>
      * @throws SchedulerException
      * @author guney
      * @date 2026. 3. 9.
@@ -174,4 +179,44 @@ public class QuartzService {
         
         return jobs;
     }
+    
+    /**
+     * 사용자 job 조회
+     * @param userId
+     * @return String
+     * @throws SchedulerException
+     * @author guney
+     * @date 2026. 3. 10.
+     */
+    public QuartzLiveJobsResponseDto getUserJobStatus(String userId) {
+        
+    	String nextFireTime = null;
+    	Trigger trigger = null;
+    	Trigger.TriggerState state = TriggerState.NONE;
+    	
+    	JobKey jobKey = JobKey.jobKey(userId, userId.concat(GROUP_NAME));
+    	
+    	try {
+			scheduler.getTriggersOfJob(jobKey);
+			
+	    	List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+	    	
+	    	if (!CollectionUtils.isEmpty(triggers)) {
+	    		trigger = triggers.getFirst();
+	    		state = scheduler.getTriggerState(trigger.getKey());
+	    		nextFireTime = DateUtils.localDateTimeToString(DateUtils.toLocalDateTime(trigger.getNextFireTime()));
+			}
+	    			
+		} catch (SchedulerException e) {
+			log.error("QuartzService getUserJobStatus ERROR : {}", e);
+		}
+    		
+        return QuartzLiveJobsResponseDto.builder()
+        		.jobName(jobKey.getName())
+				.groupName(jobKey.getGroup())
+				.nextFireTime(nextFireTime)
+				.status(state.name())
+        		.build();
+    }
+    
 }

@@ -66,7 +66,7 @@ public class QuartzController {
     		jobDataMap.put("userId", userId);
     		
     		//유저용 잡 등록
-			quartzService.registerJob(userId, "userGroup", JobKoreaUserResumeJob.class, userId, "0 0/30 * * * ?", jobDataMap);
+			quartzService.registerJob(userId, userId.concat(QuartzService.GROUP_NAME), JobKoreaUserResumeJob.class, userId, "* 0/30 * * * ?", jobDataMap);
 		} catch (SchedulerException e) {
 			log.error("JobKoreaRegistryService 잡등록 터졌어 ERROR : ");
 			e.printStackTrace();
@@ -100,5 +100,10 @@ public class QuartzController {
     @GetMapping("/stil/alive")
     public List<QuartzLiveJobsResponseDto> getAllJobs() {
     	return quartzService.getAllJobs();
+    }
+    
+    @GetMapping("/user/job")
+    public QuartzLiveJobsResponseDto getUserJobStatus(@RequestParam(required = true) String userId) {
+    	return quartzService.getUserJobStatus(userId);
     }
 }
