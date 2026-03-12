@@ -11,7 +11,7 @@ public class HerokuRestarter {
     private static final WebClient webClient = WebClient.builder().baseUrl("https://api.heroku.com").build();
 
     public static void restartHerokuDyno() {
-        log.info("🔄 Heroku Dyno 재시작 요청...");
+        log.info("Heroku Dyno 재시작 요청...");
 
         try {
             webClient.delete()
@@ -20,11 +20,11 @@ public class HerokuRestarter {
                 .header("Accept", "application/vnd.heroku+json; version=3")
                 .retrieve()
                 .bodyToMono(Void.class)
-                .block();  // 🔴 subscribe() 대신 block() 사용하여 즉시 실행
+                .block();
 
-            log.info("✅ Heroku Dyno 재시작 성공!");
+            log.info("Heroku Dyno 재시작 성공!");
         } catch (Exception e) {
-            log.error("❌ Heroku Dyno 재시작 실패: {}", e.getMessage());
+            log.error("Heroku Dyno 재시작 실패: {}", e.getMessage());
         }
     }
 

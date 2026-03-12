@@ -99,8 +99,9 @@ public class JobKoreaResumeUpdaterService {
             
         } catch (SessionNotCreatedException e) {
         	log.error("[SessionNotCreatedException] 오류 발생 : {}", e.getMessage());
-        	e.printStackTrace();
         	HerokuRestarter.restartHerokuDyno();
+        	
+        	throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
         	log.error("[Exception] 오류 발생 : {}", e.getMessage());
         	
