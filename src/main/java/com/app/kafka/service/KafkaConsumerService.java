@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class KafkaConsumerService {
 
-	@KafkaListener(topics = "restApi")
+//	@KafkaListener(topics = "restApi")
 	public void restApiConsume(MemberReqDTO memberReqDTO) {
 		log.info("restApi kafka message : {}", memberReqDTO);
 	}
