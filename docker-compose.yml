@@ -5,6 +5,9 @@ services:
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - ./data/zookeeper/data:/var/lib/zookeeper/data
+      - ./data/zookeeper/log:/var/lib/zookeeper/log
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
@@ -13,6 +16,8 @@ services:
       - zookeeper
     ports:
       - "9092:9092"
+    volumes:
+      - ./data/kafka/data:/var/lib/kafka/data
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -24,6 +29,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0                 # 컨슈머 그룹이 조인할 때 대기 시간 (0 : 즉시 실행)
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1                    # 트랜잭션 상태 로그의 최소 동기화 및 복제본 수
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_LOG_RETENTION_HOURS: 168                            # 7일 보관
 
   # 카프카의 토픽과 메시지를 웹 브라우저(http://localhost:9090)에서 확인하는 도구
   kafka-ui:
