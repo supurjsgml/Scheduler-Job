@@ -67,7 +67,7 @@ rest-api:
   guney: 
     baseUrl: http://localhost:8080
   batch:
-    baseUrl: https://guney-batch.kro.kr
+    baseUrl: http://localhost:8081
 
 ---
 
