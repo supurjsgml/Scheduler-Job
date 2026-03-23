@@ -42,10 +42,10 @@ jasypt:
   
 key:
   kakao:
-    clientId: "${KAKAO_CLIENT_ID}"
-    clientSecret: "${KAKAO_CLIENT_SECRET}"
-    refreshToken: "${KAKAO_REFRESH_TOKEN}"
-
+    clientId: 뭐게요
+    clientSecret: 뭘까
+    refreshToken: 궁굼하지롱
+  
 ---
 
 spring:
@@ -78,7 +78,13 @@ spring:
     
 server:
   port: ${port:8081}
-    
+
+key:
+  kakao:
+    clientId: "${KAKAO_CLIENT_ID}"
+    clientSecret: "${KAKAO_CLIENT_SECRET}"
+    refreshToken: "${KAKAO_REFRESH_TOKEN}"
+  
 rest-api:
   heroku:
     baseUrl: https://api.heroku.com
@@ -104,6 +110,12 @@ spring:
       
 server:
   port: ${port:80}
+  
+key:
+  kakao:
+    clientId: "${KAKAO_CLIENT_ID}"
+    clientSecret: "${KAKAO_CLIENT_SECRET}"
+    refreshToken: "${KAKAO_REFRESH_TOKEN}"
   
 management:
   otlp:  
