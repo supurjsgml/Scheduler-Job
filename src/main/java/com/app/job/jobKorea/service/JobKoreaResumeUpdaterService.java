@@ -67,6 +67,8 @@ public class JobKoreaResumeUpdaterService {
         	options.addArguments("--disable-extensions");                   //확장 프로그램 비활성화
         	options.addArguments("--blink-settings=imagesEnabled=false"); 	//이미지 로딩 방지
         	options.addArguments("--disable-software-rasterizer");			//그래픽 처리시 CPU가 몸빵하라
+        	options.addArguments("--window-size=1920,1080"); 				//창 크기 강제 설정
+        	options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"); //잽코리아가 날 봇으로 거르나?
 
         	//운영만
         	if ("prod".equals(profile)) {
@@ -81,8 +83,8 @@ public class JobKoreaResumeUpdaterService {
             log.info("JobKorea 홈페이지 접속 완료");
 
             // 로그인
-            WebElement id = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("M_ID")));
-            WebElement pw = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("M_PWD")));
+            WebElement id = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("M_ID")));
+            WebElement pw = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("M_PWD")));
             WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("login-button")));
 
             id.sendKeys(memberReqDTO.getId());
