@@ -39,6 +39,12 @@ jasypt:
 풀어-보거라:
   훌랠릴: 끄얼끄얼
   랠룰: 낄낄
+  
+key:
+  kakao:
+    clientId: "${KAKAO_CLIENT_ID}"
+    clientSecret: "${KAKAO_CLIENT_SECRET}"
+    refreshToken: "${KAKAO_REFRESH_TOKEN}"
 
 ---
 
@@ -46,6 +52,22 @@ spring:
   config:
     activate:
       on-profile: local
+      
+rest-api:
+  heroku:
+    baseUrl: https://api.heroku.com
+  kakao:
+    v2: /v2
+    api: 
+      baseUrl: https://kapi.kakao.com
+      memo: "${rest-api.kakao.api.baseUrl}${rest-api.kakao.v2}/api/talk/memo/default/send"
+    auth:
+      baseUrl: https://kauth.kakao.com
+      token: ${rest-api.kakao.auth.baseUrl}/oauth/token
+  guney: 
+    baseUrl: http://localhost:8080
+  batch:
+    baseUrl: https://guney-batch.kro.kr
 
 ---
 
@@ -53,10 +75,26 @@ spring:
   config:
     activate:
       on-profile: dev
-      
+    
 server:
   port: ${port:8081}
     
+rest-api:
+  heroku:
+    baseUrl: https://api.heroku.com
+  kakao:
+    v2: /v2
+    api: 
+      baseUrl: https://kapi.kakao.com
+      memo: "${rest-api.kakao.api.baseUrl}${rest-api.kakao.v2}/api/talk/memo/default/send"
+    auth:
+      baseUrl: https://kauth.kakao.com
+      token: ${rest-api.kakao.auth.baseUrl}/oauth/token
+  guney: 
+    baseUrl: https://xn--v69a93jfng.xn--hk3b17f.xn--3e0b707e
+  batch:
+    baseUrl: https://guney-batch.kro.kr
+
 ---
 
 spring:
@@ -92,3 +130,19 @@ jasypt:
 풀어-보거라:
   훌랠릴: ENC(tNWzSG9f9HShTfSHxqTqS0amKWLZLAoimVJvIQwvMv3oT6qPuN/xUexCWzhg1rQ4)
   랠룰: ENC(m/WC78PJYkkrKbGYko0ADpVKFvOrsM9rrWiDrnLkOGeyQ7KNXwm7BWOMBFfRLNwB)
+  
+rest-api:
+  heroku:
+    baseUrl: https://api.heroku.com
+  kakao:
+    v2: /v2
+    api: 
+      baseUrl: https://kapi.kakao.com
+      memo: "${rest-api.kakao.api.baseUrl}${rest-api.kakao.v2}/api/talk/memo/default/send"
+    auth:
+      baseUrl: https://kauth.kakao.com
+      token: ${rest-api.kakao.auth.baseUrl}/oauth/token
+  guney: 
+    baseUrl: https://xn--v69a93jfng.xn--hk3b17f.xn--3e0b707e
+  batch:
+    baseUrl: https://guney-batch.kro.kr

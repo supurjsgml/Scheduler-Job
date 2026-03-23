@@ -2,7 +2,6 @@ package com.app.job.jobKorea;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.app.job.jobKorea.dto.req.MemberReqDTO;
 import com.app.job.jobKorea.service.JobKoreaResumeUpdaterService;
@@ -17,8 +16,6 @@ public class JobKoreaScheduleler {
 
 	private final JobKoreaResumeUpdaterService updater;
     
-    private final WebClient webClient;
-
     private final RestTemplate restTemplate;
 
     //매일 1시간마다 실행

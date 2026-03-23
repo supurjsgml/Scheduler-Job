@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.app.job.jobKorea.dto.req.MemberReqDTO;
+import com.app.kakao.service.KakaoAlarmService;
 import com.app.util.HerokuRestarter;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class JobKoreaResumeUpdaterService {
+	
+	private final KakaoAlarmService kakaoAlarmService;
 	
 	@Value("${spring.app.activate.on-profile:local}")
 	private String profile;
@@ -105,13 +108,19 @@ public class JobKoreaResumeUpdaterService {
         	
         	throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
-        	log.error("[Exception] 오류 발생 : {}", e.getMessage());
+        	String errMsg = e.getMessage();
         	
-        	if (e.getMessage().contains("Command failed with code: 134") || e.getMessage().contains("Unable to obtain") || e.getMessage().contains("TimeoutException")) {
+        	log.error("[Exception] 오류 발생 : {}", errMsg);
+        	
+        	if (errMsg.contains("Command failed with code: 134") || errMsg.contains("Unable to obtain") || errMsg.contains("TimeoutException")) {
         		HerokuRestarter.restartHerokuDyno();
 			}
         	
-        	throw new RuntimeException(e.getMessage());
+        	//주인장 알림톡 전송
+        	kakaoAlarmService.sendKakao(errMsg.length() > 180 ? errMsg.substring(180) : errMsg);
+        	
+        	//잘가시고
+        	throw new RuntimeException(errMsg);
         } finally {
             if (driver != null) {
                 log.info("크롬 드라이버 종료");
