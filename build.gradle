@@ -57,6 +57,7 @@ tasks.named('test') {
 }
 
 tasks.named("bootJar") {
+    archiveFileName = 'Scheduler-Job.jar'
     enabled = true
 }
 
