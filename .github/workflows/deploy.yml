@@ -96,7 +96,7 @@ jobs:
                   cd /home/ubuntu/scheduler-job
                   
                   # PM2를 이용하여 Java Scheduler 실행 및 무중단 재시작
-                  (pm2 reload "scheduler-job" --update-env || pm2 start "java -jar -Dspring.profiles.active=prod Scheduler-Job.jar" --name "scheduler-job") && pm2 save
+                  (pm2 reload "scheduler-job" --update-env || pm2 start "java -Dspring.profiles.active=prod -jar Scheduler-Job.jar" --name "scheduler-job") && pm2 save
             
     # 소스코드 변경사항 없이 수동 빌드/재시작 시 작동
     restart:
