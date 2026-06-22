@@ -28,82 +28,85 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class QuartzController {
 
-    private final QuartzService quartzService;
-    
-    private final JobKoreaResumeUpdaterService updater;
-    
-    private final JobKoreaRegistryService jobKoreaRegistryService;
+	private final QuartzService quartzService;
 
-    @PostMapping("/pause")
-    public String pauseJob(String triggerName, String groupName) throws SchedulerException {
-        quartzService.pauseJob(triggerName, groupName);
-        return "Job paused: " + triggerName;
-    }
+	private final JobKoreaResumeUpdaterService updater;
 
-    @PostMapping("/resume")
-    public String resumeJob(String triggerName, String groupName) throws SchedulerException {
-        quartzService.resumeJob(triggerName, groupName);
-        return "Job resumed: " + triggerName;
-    }
+	private final JobKoreaRegistryService jobKoreaRegistryService;
 
-    @PostMapping("/reschedule")
-    public String rescheduleJob(String triggerName, String groupName, String jobName, String cron) throws SchedulerException {
-        quartzService.rescheduleJob(triggerName, groupName, jobName, cron);
-        return "Job rescheduled to: " + cron;
-    }
-    
-    @PostMapping("/login")
-    public Map<String, Object> login(@RequestBody MemberReqDTO memberReqDTO) {
-    	HashMap<String, Object> result = new HashMap<>();
+	@PostMapping("/pause")
+	public String pauseJob(String triggerName, String groupName) throws SchedulerException {
+		quartzService.pauseJob(triggerName, groupName);
+		return "Job paused: " + triggerName;
+	}
 
-    	try {
-    		//난 저장소가 없어요
-    		jobKoreaRegistryService.registerUser(memberReqDTO);
-    		
-    		String userId = memberReqDTO.getId();
-    		
-    		Map<String, Object> jobDataMap = new HashMap<>();
-    		jobDataMap.put("userId", userId);
-    		
-    		//유저용 잡 등록 최초 실행 기준으로 30분마다
-			quartzService.registerJob(userId, QuartzService.QUARTZ_GROUP_NAME, JobKoreaUserResumeJob.class, userId, null, 30 * 60 * 1000L, jobDataMap);
+	@PostMapping("/resume")
+	public String resumeJob(String triggerName, String groupName) throws SchedulerException {
+		quartzService.resumeJob(triggerName, groupName);
+		return "Job resumed: " + triggerName;
+	}
+
+	@PostMapping("/reschedule")
+	public String rescheduleJob(String triggerName, String groupName, String jobName, String cron)
+			throws SchedulerException {
+		quartzService.rescheduleJob(triggerName, groupName, jobName, cron);
+		return "Job rescheduled to: " + cron;
+	}
+
+	@PostMapping("/login")
+	public Map<String, Object> login(@RequestBody MemberReqDTO memberReqDTO) {
+		HashMap<String, Object> result = new HashMap<>();
+
+		try {
+			// 난 저장소가 없어요
+			jobKoreaRegistryService.registerUser(memberReqDTO);
+
+			String userId = memberReqDTO.getId();
+
+			Map<String, Object> jobDataMap = new HashMap<>();
+			jobDataMap.put("userId", userId);
+
+			// 유저용 잡 등록 최초 실행 기준으로 30분마다
+			quartzService.registerJob(userId, QuartzService.QUARTZ_GROUP_NAME, JobKoreaUserResumeJob.class, userId,
+					null, 30 * 60 * 1000L, jobDataMap);
 		} catch (SchedulerException e) {
 			log.error("JobKoreaRegistryService 잡등록 터졌어 ERROR : ");
 			e.printStackTrace();
 		}
-    	
-    	try {
-    		updater.updateResume(memberReqDTO);
-    		
-    		//토큰생성
-    		memberReqDTO.setToken("test");
-    		
-    		result.put("token", memberReqDTO.getToken());
+
+		try {
+			updater.updateResume(memberReqDTO);
+
+			// 토큰생성
+			memberReqDTO.setToken("test");
+
+			result.put("token", memberReqDTO.getToken());
 		} catch (Exception e) {
 			String errMsg = "서버에러 발생 관리자에게 문의해 주세요.";
 			String errCode = "500";
-			
-			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element") || e.getMessage().contains("unexpected alert open")) {
+
+			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element")
+					|| e.getMessage().contains("unexpected alert open")) {
 				errCode = "9000";
 				errMsg = "로그인에 실패 하였습니다. 아이디 비밀번호를 확인해 주세요.";
 			}
-			
+
 			result.put("errMsg", errMsg);
 			result.put("errCode", errCode);
 			log.error(e.getMessage());
 			e.getStackTrace();
 		}
-    	
-    	return result;
-    }
-    
-    @GetMapping("/stil/alive")
-    public List<QuartzLiveJobsResponseDto> getAllJobs() {
-    	return quartzService.getAllJobs();
-    }
-    
-    @GetMapping("/user/job")
-    public QuartzLiveJobsResponseDto getUserJobStatus(@RequestParam(required = true) String userId) {
-    	return quartzService.getUserJobStatus(userId);
-    }
+
+		return result;
+	}
+
+	@GetMapping("/stil/alive")
+	public List<QuartzLiveJobsResponseDto> getAllJobs() {
+		return quartzService.getAllJobs();
+	}
+
+	@GetMapping("/user/job")
+	public QuartzLiveJobsResponseDto getUserJobStatus(@RequestParam(required = true) String userId) {
+		return quartzService.getUserJobStatus(userId);
+	}
 }
