@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -65,6 +66,19 @@ public class KakaoAlarmService {
         } catch (Exception e) {
             log.error("새로운 리프레시 토큰을 로컬 파일에 저장하는 도중 오류 발생: {}", e.getMessage());
         }
+    }
+
+    // 7일마다 주기적으로 카카오 토큰을 자동 갱신해 주어 리프레시 토큰이 만료(2달)되는 것을 영구히 방지합니다.
+    @Scheduled(cron = "0 0 4 */7 * ?") // 7일마다 새벽 4시 실행
+    public void scheduledTokenRefresh() {
+        log.info("정기 카카오 토큰 자동 갱신 스케줄러 작동 시작");
+        getAccessToken().subscribe(
+            res -> log.info("정기 카카오 토큰 자동 갱신 성공"),
+            err -> {
+                log.error("정기 카카오 토큰 자동 갱신 실패: {}", err.getMessage());
+                sendKakao("정기 카카오 토큰 자동 갱신 실패: " + err.getMessage());
+            }
+        );
     }
 
     public Mono<String> getAccessToken() {
