@@ -40,17 +40,52 @@ public class KakaoAlarmService {
     @Value("${key.kakao.refreshToken}")
     private String refreshToken;
 
+    private String loadRefreshToken() {
+        try {
+            java.io.File file = new java.io.File("kakao-token.txt");
+            if (file.exists()) {
+                String fileToken = java.nio.file.Files.readString(file.toPath()).trim();
+                if (!fileToken.isEmpty()) {
+                    log.info("로컬 파일(kakao-token.txt)에서 카카오 리프레시 토큰을 로드했습니다.");
+                    return fileToken;
+                }
+            }
+        } catch (Exception e) {
+            log.error("로컬 파일에서 리프레시 토큰을 읽는 도중 오류 발생: {}", e.getMessage());
+        }
+        log.info("설정 정보(환경변수)의 카카오 리프레시 토큰을 사용합니다.");
+        return refreshToken;
+    }
+
+    private void saveRefreshToken(String newToken) {
+        try {
+            java.io.File file = new java.io.File("kakao-token.txt");
+            java.nio.file.Files.writeString(file.toPath(), newToken.trim());
+            log.info("새로운 카카오 리프레시 토큰을 로컬 파일(kakao-token.txt)에 저장했습니다.");
+        } catch (Exception e) {
+            log.error("새로운 리프레시 토큰을 로컬 파일에 저장하는 도중 오류 발생: {}", e.getMessage());
+        }
+    }
+
     public Mono<String> getAccessToken() {
+        String currentRefreshToken = loadRefreshToken();
         return webClient.post()
                 .uri(restApiProperties.kakao().auth().token())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData("grant_type", "refresh_token")
                         .with("client_id", clientId)
                         .with("client_secret", clientSecret)
-                        .with("refresh_token", refreshToken))
+                        .with("refresh_token", currentRefreshToken))
                 .retrieve()
                 .bodyToMono(Map.class)
-                .map(response -> (String) response.get("access_token"))
+                .flatMap(response -> {
+                    String accessToken = (String) response.get("access_token");
+                    String newRefreshToken = (String) response.get("refresh_token");
+                    if (newRefreshToken != null && !newRefreshToken.trim().isEmpty() && !newRefreshToken.equals(currentRefreshToken)) {
+                        saveRefreshToken(newRefreshToken);
+                    }
+                    return Mono.just(accessToken);
+                })
                 .doOnError(e -> log.error("카카오 토큰 갱신 실패: {}", e.getMessage()));
     }
 
