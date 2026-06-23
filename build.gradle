@@ -64,3 +64,8 @@ tasks.named("bootJar") {
 tasks.named("jar") {
     enabled = false //jar 파일 중복 생성 방지
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs.add("-parameters")
+}
+
