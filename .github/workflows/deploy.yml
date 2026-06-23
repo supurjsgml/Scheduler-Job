@@ -63,6 +63,8 @@ jobs:
         if: needs.check.outputs.changed == 'true' || github.event_name == 'workflow_dispatch'
         runs-on: ubuntu-latest
         
+        environment: jcheduler-job
+
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
