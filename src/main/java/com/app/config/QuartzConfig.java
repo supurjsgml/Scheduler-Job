@@ -4,6 +4,7 @@ import org.quartz.Scheduler;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 @Configuration
@@ -33,6 +34,7 @@ public class QuartzConfig {
     }
 
     @Bean
+    @Primary
     public Scheduler scheduler(SchedulerFactoryBean factoryBean) throws Exception {
         return factoryBean.getObject();
     }

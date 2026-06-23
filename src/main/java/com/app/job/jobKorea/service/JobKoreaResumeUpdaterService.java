@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import com.app.job.jobKorea.dto.req.MemberReqDTO;
 import com.app.kakao.service.KakaoAlarmService;
-import com.app.util.HerokuRestarter;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,12 +25,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class JobKoreaResumeUpdaterService {
-	
+
 	private final KakaoAlarmService kakaoAlarmService;
-	
+
 	@Value("${spring.app.activate.on-profile:local}")
 	private String profile;
-	
+
 	public Map<String, Object> updateResumeLogin(MemberReqDTO memberReqDTO) {
 		HashMap<String, Object> result = new HashMap<>();
 		try {
@@ -39,93 +38,94 @@ public class JobKoreaResumeUpdaterService {
 		} catch (Exception e) {
 			String errMsg = "서버에러 발생 관리자에게 문의해 주세요.";
 			String errCode = "500";
-			
-			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element") || e.getMessage().contains("unexpected alert open")) {
+
+			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element")
+					|| e.getMessage().contains("unexpected alert open")) {
 				errCode = "9000";
 				errMsg = "로그인에 실패 하였습니다. 아이디 비밀번호를 확인해 주세요.";
 			}
-			
+
 			result.put("errMsg", errMsg);
 			result.put("errCode", errCode);
-		
+
 			log.error(e.getMessage());
 		}
-		
+
 		return result;
-		
+
 	}
-	
-    public void updateResume(MemberReqDTO memberReqDTO) {
-    	ChromeOptions options = null;
-    	WebDriver driver = null;
-    	WebDriverWait wait = null;
-    	
-        try {
-        	options = new ChromeOptions();
-        	options.addArguments("--headless");                             //GUI 없이 실행 (서버 환경 필수)
-        	options.addArguments("--no-sandbox");                           //보안 정책 우회 (메모리 절약)
-        	options.addArguments("--disable-dev-shm-usage");                //공유 메모리 비활성화 (Heroku 필수)
-        	options.addArguments("--disable-gpu");                          //GPU 사용 비활성화
-        	options.addArguments("--remote-allow-origins=*");               //원격 실행 허용
-        	options.addArguments("--disable-extensions");                   //확장 프로그램 비활성화
-        	options.addArguments("--blink-settings=imagesEnabled=false"); 	//이미지 로딩 방지
-        	options.addArguments("--disable-software-rasterizer");			//그래픽 처리시 CPU가 몸빵하라
-        	options.addArguments("--window-size=1920,1080"); 				//창 크기 강제 설정
-        	options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"); //잽코리아가 날 봇으로 거르나?
 
-        	//운영만
-        	if ("prod".equals(profile)) {
-        		options.addArguments("--remote-debugging-pipe"); 	            //소켓 대신 파이프 통신 사용
-        		options.addArguments("--single-process");        				//크롬 단일 프로세스로 실행
+	public void updateResume(MemberReqDTO memberReqDTO) {
+		ChromeOptions options = null;
+		WebDriver driver = null;
+		WebDriverWait wait = null;
+
+		try {
+			options = new ChromeOptions();
+			options.addArguments("--headless"); // GUI 없이 실행 (서버 환경 필수)
+			options.addArguments("--no-sandbox"); // 보안 정책 우회 (메모리 절약)
+			options.addArguments("--disable-dev-shm-usage"); // 공유 메모리 비활성화 (Heroku 필수)
+			options.addArguments("--disable-gpu"); // GPU 사용 비활성화
+			options.addArguments("--remote-allow-origins=*"); // 원격 실행 허용
+			options.addArguments("--disable-extensions"); // 확장 프로그램 비활성화
+			options.addArguments("--blink-settings=imagesEnabled=false"); // 이미지 로딩 방지
+			options.addArguments("--disable-software-rasterizer"); // 그래픽 처리시 CPU가 몸빵하라
+			options.addArguments("--window-size=1920,1080"); // 창 크기 강제 설정
+			options.addArguments(
+					"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36"); // 잽코리아가
+																																						// 날
+																																						// 봇으로
+																																						// 거르나?
+
+			// 운영만
+			if ("prod".equals(profile)) {
+				options.addArguments("--remote-debugging-pipe"); // 소켓 대신 파이프 통신 사용
+				options.addArguments("--single-process"); // 크롬 단일 프로세스로 실행
 			}
-        	
-        	driver = new ChromeDriver(options);
-        	wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        	
-            driver.get("https://www.jobkorea.co.kr/Login/Login_Tot.asp");
-            log.info("JobKorea 홈페이지 접속 완료");
 
-            // 로그인
-            WebElement id = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("M_ID")));
-            WebElement pw = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("M_PWD")));
-            WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("login-button")));
+			driver = new ChromeDriver(options);
+			wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-            id.sendKeys(memberReqDTO.getId());
-            pw.sendKeys(memberReqDTO.getPw());
-            loginButton.click();
+			driver.get("https://www.jobkorea.co.kr/Login/Login_Tot.asp");
+			log.info("JobKorea 홈페이지 접속 완료");
 
-            // 로그인 성공 여부 확인 (Thread.sleep 제거, WebDriverWait 사용)
-            WebElement linkElement = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".status a")));
-            driver.get(linkElement.getAttribute("href"));
+			// 로그인
+			WebElement id = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("M_ID")));
+			WebElement pw = wait.until(ExpectedConditions.presenceOfElementLocated(By.name("M_PWD")));
+			WebElement loginButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("login-button")));
 
-            WebElement updateButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("button-update")));
-            updateButton.click();
-            log.info("이력서 갱신 완료");
-            
-        } catch (SessionNotCreatedException e) {
-        	log.error("[SessionNotCreatedException] 오류 발생 : {}", e.getMessage());
-        	HerokuRestarter.restartHerokuDyno();
-        	
-        	throw new RuntimeException(e.getMessage());
-        } catch (Exception e) {
-        	String errMsg = e.getMessage();
-        	
-        	log.error("[Exception] 오류 발생 : {}", errMsg);
-        	
-        	if (errMsg.contains("Command failed with code: 134") || errMsg.contains("Unable to obtain") || errMsg.contains("TimeoutException")) {
-        		HerokuRestarter.restartHerokuDyno();
+			id.sendKeys(memberReqDTO.getId());
+			pw.sendKeys(memberReqDTO.getPw());
+			loginButton.click();
+
+			// 로그인 성공 여부 확인 (Thread.sleep 제거, WebDriverWait 사용)
+			WebElement linkElement = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(".status a")));
+			driver.get(linkElement.getAttribute("href"));
+
+			WebElement updateButton = wait
+					.until(ExpectedConditions.elementToBeClickable(By.className("button-update")));
+			updateButton.click();
+			log.info("이력서 갱신 완료");
+
+		} catch (SessionNotCreatedException e) {
+			log.error("[SessionNotCreatedException] 오류 발생 : {}", e.getMessage());
+
+			throw new RuntimeException(e.getMessage());
+		} catch (Exception e) {
+			String errMsg = e.getMessage();
+
+			log.error("[Exception] 오류 발생 : {}", errMsg);
+
+			// 주인장 알림톡 전송
+			kakaoAlarmService.sendKakao(errMsg.length() > 180 ? errMsg.substring(180) : errMsg);
+
+			// 잘가시고
+			throw new RuntimeException(errMsg);
+		} finally {
+			if (driver != null) {
+				log.info("크롬 드라이버 종료");
+				driver.quit();
 			}
-        	
-        	//주인장 알림톡 전송
-        	kakaoAlarmService.sendKakao(errMsg.length() > 180 ? errMsg.substring(180) : errMsg);
-        	
-        	//잘가시고
-        	throw new RuntimeException(errMsg);
-        } finally {
-            if (driver != null) {
-                log.info("크롬 드라이버 종료");
-                driver.quit();
-            }
-        }
-    }
+		}
+	}
 }
