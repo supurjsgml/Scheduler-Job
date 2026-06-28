@@ -14,7 +14,9 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import com.app.common.utils.WebClientUtil;
 
+import com.app.common.constants.RestApiProperties;
 import com.app.job.jobKorea.dto.req.MemberReqDTO;
 import com.app.kakao.service.KakaoAlarmService;
 
@@ -27,6 +29,10 @@ import lombok.extern.slf4j.Slf4j;
 public class JobKoreaResumeUpdaterService {
 
 	private final KakaoAlarmService kakaoAlarmService;
+
+	private final RestApiProperties restApiProperties;
+
+	private final WebClientUtil webClientUtil;
 
 	@Value("${spring.app.activate.on-profile:local}")
 	private String profile;
@@ -118,6 +124,17 @@ public class JobKoreaResumeUpdaterService {
 
 			// 주인장 알림톡 전송
 			kakaoAlarmService.sendKakao(errMsg.length() > 180 ? errMsg.substring(180) : errMsg);
+
+			// restApi 서버 재시작 요청
+			try {
+				String restartUrl = restApiProperties.guney().baseUrl().concat("/api/lightsail/restart");
+				webClientUtil.getAsync(restartUrl, String.class)
+						.subscribe(
+								res -> log.info("restApi 재시작 요청 성공 : {}", res),
+								err -> log.error("restApi 재시작 요청 실패 : {}", err.getMessage()));
+			} catch (Exception restartEx) {
+				log.error("restApi 재시작 요청 중 오류 : {}", restartEx.getMessage());
+			}
 
 			// 잘가시고
 			throw new RuntimeException(errMsg);
