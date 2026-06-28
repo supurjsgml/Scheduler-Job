@@ -112,4 +112,19 @@ public class WebClientUtil {
                 .collectList();
     }
     
+    
+    //POST Form Data (비동기, 헤더 지정 가능)
+    public <T> Mono<T> postFormAsync(String url, org.springframework.util.MultiValueMap<String, String> formData, java.util.Map<String, String> headers, Class<T> responseType) {
+        org.springframework.web.reactive.function.client.WebClient.RequestBodySpec requestSpec = webClient.post()
+                .uri(url)
+                .contentType(org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED);
+        
+        if (headers != null) {
+            headers.forEach(requestSpec::header);
+        }
+        
+        return requestSpec.body(org.springframework.web.reactive.function.BodyInserters.fromFormData(formData))
+                .retrieve()
+                .bodyToMono(responseType);
+    }
 }
