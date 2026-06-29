@@ -30,6 +30,11 @@ public class KakaoAlarmService {
         log.info("정기 카카오 토큰 자동 갱신 스케줄러 작동 시작");
         String currentToken = loadRefreshToken();
 
+        if (currentToken == null || currentToken.trim().isEmpty()) {
+            log.warn("정기 카카오 토큰 자동 갱신 중단: 리프레시 토큰이 비어있음");
+            return;
+        }
+
         webClientUtil.postAsync(
                 restApiProperties.guney().baseUrl() + "/api/kakao/refresh-token",
                 Map.of("refreshToken", currentToken),
@@ -46,8 +51,11 @@ public class KakaoAlarmService {
                     }
                 },
                 err -> {
-                    log.error("정기 카카오 토큰 자동 갱신 실패: {}", err.getMessage());
-                    sendKakao("정기 카카오 토큰 자동 갱신 실패: " + err.getMessage());
+                    String errorMsg = String.format("정기 카카오 토큰 자동 갱신 실패: [%s] %s",
+                            err.getClass().getSimpleName(),
+                            err.getMessage() != null ? err.getMessage() : "상세 메시지 없음");
+                    log.error(errorMsg, err);
+                    sendKakao(errorMsg);
                 });
     }
 
@@ -65,7 +73,7 @@ public class KakaoAlarmService {
             log.error("loadRefreshToken ERROR : {}", e.getMessage());
         }
         log.info("설정 정보의 리프레시 토큰을 사용.");
-        return refreshToken;
+        return refreshToken != null ? refreshToken.trim() : "";
     }
 
     private void saveRefreshToken(String newToken) {
@@ -80,10 +88,11 @@ public class KakaoAlarmService {
 
     public void sendKakao(String msg) {
         String currentToken = loadRefreshToken();
+        String safeToken = currentToken != null ? currentToken : "";
 
         webClientUtil.postAsync(
                 restApiProperties.guney().baseUrl() + "/api/kakao/send",
-                Map.of("msg", msg, "refreshToken", currentToken),
+                Map.of("msg", msg != null ? msg : "알림 내용 없음", "refreshToken", safeToken),
                 Map.class
         ).subscribe(
                 res -> {

@@ -25,4 +25,11 @@ public class MessageController {
         kakaoAlarmService.sendKakao(msg);
         return HttpStatus.OK;
     }
+
+    @GetMapping("/kakao/refresh")
+    public HttpStatus triggerTokenRefresh() {
+        log.info("수동 카카오 토큰 자동 갱신 API 호출");
+        kakaoAlarmService.scheduledTokenRefresh();
+        return HttpStatus.OK;
+    }
 }
