@@ -2,6 +2,7 @@ package com.app.kakao.service;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -41,14 +42,28 @@ public class KakaoAlarmService {
                 Map.class
         ).subscribe(
                 res -> {
-                    log.info("정기 카카오 토큰 자동 갱신 성공");
-                    if (res != null && res.get("data") != null) {
-                        Map<String, Object> data = (Map<String, Object>) res.get("data");
-                        String newRefreshToken = (String) data.get("newRefreshToken");
-                        if (newRefreshToken != null && !newRefreshToken.isEmpty()) {
-                            saveRefreshToken(newRefreshToken);
+                    log.info("정기 카카오 토큰 자동 갱신 응답 수신: {}", res);
+
+                    if (ObjectUtils.isNotEmpty(res)) {
+                        if (ObjectUtils.isNotEmpty(res.get("header")) && "BAD_REQUEST".equals(((Map<String, Object>) res.get("header")).get("code"))) {
+                            log.info("캐캬오 ERROR : {}", ((Map<String, Object>) res.get("header")).get("message"));
+                            return;
                         }
+
+                        if (ObjectUtils.isNotEmpty(res.get("data"))) {
+                            Map<String, Object> data = (Map<String, Object>) res.get("data");
+                            String newRefreshToken = (String) data.get("newRefreshToken");
+
+                            if (newRefreshToken != null && !newRefreshToken.isEmpty()) {
+                                saveRefreshToken(newRefreshToken);
+                            } else {
+                                log.info("새로운 리프레시 토큰이 발급되지 않아 저장 단계를 건너뜁니다.");
+                            }
+                        }
+                    } else {
+                        log.info("퍽킹 없는데 ???");
                     }
+
                 },
                 err -> {
                     String errorMsg = String.format("정기 카카오 토큰 자동 갱신 실패: [%s] %s",
