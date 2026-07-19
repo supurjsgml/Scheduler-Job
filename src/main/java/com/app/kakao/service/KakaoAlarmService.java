@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+
 import org.springframework.stereotype.Service;
 
 import com.app.common.constants.RestApiProperties;
@@ -26,7 +26,6 @@ public class KakaoAlarmService {
     private String refreshToken;
 
     // 7일마다 새벽 4시 실행
-    @Scheduled(cron = "0 0 4 */7 * ?")
     public void scheduledTokenRefresh() {
         log.info("정기 카카오 토큰 자동 갱신 스케줄러 작동 시작");
         String currentToken = loadRefreshToken();

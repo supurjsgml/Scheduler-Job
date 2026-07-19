@@ -23,10 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.app.common.utils.DateUtils;
-import com.app.job.quartz.QuartzJob;
 import com.app.job.quartz.dto.res.QuartzLiveJobsResponseDto;
 import com.app.job.quartz.quartzListener.JobExecutionMetricsListener;
-import com.app.job.stilALive.StilALiveJob;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.annotation.PostConstruct;
@@ -45,13 +43,8 @@ public class QuartzService {
     private final MeterRegistry registry;
 
     @PostConstruct
-    public void initJobs() throws SchedulerException {
+    public void initMetricsListener() throws SchedulerException {
     	scheduler.getListenerManager().addJobListener(new JobExecutionMetricsListener(registry));
-    	
-        // 이력서 갱신 Job
-//        registerJob("QuartzJob", QUARTZ_GROUP_NAME, QuartzJob.class, "jobKoreaResumeUpdate", "0 0/10 * * * ?"); // 10분마다
-        // KeepAlive Job
-        //registerJob("StilALiveJob", QUARTZ_GROUP_NAME, StilALiveJob.class, "StilALiveJob", "0 0/15 * * * ?");   // 15분마다
     }
 
     /**
