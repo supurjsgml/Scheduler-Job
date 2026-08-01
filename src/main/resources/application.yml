@@ -45,6 +45,7 @@ key:
     clientId: 뭐게요
     clientSecret: 뭘까
     refreshToken: 궁굼하지롱
+    token-file-path: kakao-token.txt
   
 ---
 
@@ -84,6 +85,7 @@ key:
     clientId: "${KAKAO_CLIENT_ID}"
     clientSecret: "${KAKAO_CLIENT_SECRET}"
     refreshToken: "${KAKAO_REFRESH_TOKEN}"
+    token-file-path: /home/ubuntu/scheduler-job/kakao-token.txt
   
 rest-api:
   heroku:
@@ -116,6 +118,7 @@ key:
     clientId: "${KAKAO_CLIENT_ID}"
     clientSecret: "${KAKAO_CLIENT_SECRET}"
     refreshToken: "${KAKAO_REFRESH_TOKEN}"
+    token-file-path: /home/ubuntu/scheduler-job/kakao-token.txt
   
 management:
   otlp:  
@@ -124,7 +127,7 @@ management:
         enabled: true 
         url: https://otlp-gateway-prod-ap-northeast-0.grafana.net/otlp/v1/metrics
         headers:  
-          Authorization: "Basic MTUzOTAzODpnbGNfZXlKdklqb2lNVFk0TURrNU1DSXNJbTRpT2lKelkyaGxaSFZzWlhJdGFtOWlMWE5qYUdWa2RXeGxjaTFxYjJJaUxDSnJJam9pT0RVd1ducHJTbFZpZVRSQ00yNHdlVFprY1dzNE9VRTNJaXdpYlNJNmV5SnlJam9pZFhNaWZYMD0="
+          Authorization: "Basic ${GRAFANA_TOKEN}"
         step: 1m
         batch-size: 512
   endpoints:

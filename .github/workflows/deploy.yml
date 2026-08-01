@@ -103,12 +103,14 @@ jobs:
                     KAKAO_CLIENT_SECRET="${{ secrets.KAKAO_CLIENT_SECRET }}" \
                     KAKAO_REFRESH_TOKEN="${{ secrets.KAKAO_REFRESH_TOKEN }}" \
                     KKAL_KKAL="${{ secrets.KKAL_KKAL }}" \
+                    GRAFANA_TOKEN="${{ secrets.GRAFANA_TOKEN }}" \
                     pm2 reload "scheduler-job" --update-env \
                   || \
                     KAKAO_CLIENT_ID="${{ secrets.KAKAO_CLIENT_ID }}" \
                     KAKAO_CLIENT_SECRET="${{ secrets.KAKAO_CLIENT_SECRET }}" \
                     KAKAO_REFRESH_TOKEN="${{ secrets.KAKAO_REFRESH_TOKEN }}" \
                     KKAL_KKAL="${{ secrets.KKAL_KKAL }}" \
+                    GRAFANA_TOKEN="${{ secrets.GRAFANA_TOKEN }}" \
                     pm2 start "java -Dspring.profiles.active=prod -jar Scheduler-Job.jar" --name "scheduler-job" \
                   ) && pm2 save
             
