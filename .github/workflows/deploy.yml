@@ -1,4 +1,4 @@
-name: master
+name: Scheduler Job Deploy
 
 on:
   workflow_dispatch:
