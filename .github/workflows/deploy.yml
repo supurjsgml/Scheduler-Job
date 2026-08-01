@@ -1,10 +1,7 @@
 name: master
 
 on:
-    workflow_dispatch:
-#    push: #수동 실행 위주로 사용하려면 주석 유지, 커밋 푸시 시 자동 배포하려면 주석 해제
-#      branches:
-#        - master
+  workflow_dispatch:
 
 jobs:
     # 소스코드 변동 여부 확인
