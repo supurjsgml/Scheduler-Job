@@ -116,6 +116,7 @@ jobs:
           if ! az containerapp show --name scheduler-job --resource-group guney-aks &>/dev/null; then
             echo ">> 신규 Azure Container App 생성: scheduler-job"
             az containerapp create \
+              --name scheduler-job \
               --resource-group guney-aks \
               --yaml manifests/app.rendered.yml
           else
@@ -162,3 +163,4 @@ jobs:
             --name scheduler-job \
             --resource-group guney-aks \
             --yaml manifests/app.rendered.yml
+
