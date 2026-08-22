@@ -1,0 +1,46 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler-job-deployment
+  namespace: default
+  labels:
+    app: scheduler-job
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scheduler-job
+  template:
+    metadata:
+      labels:
+        app: scheduler-job
+    spec:
+      containers:
+        - name: scheduler-job
+          image: ghcr.io/guney/scheduler-job:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+

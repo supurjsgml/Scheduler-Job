@@ -1,0 +1,58 @@
+﻿kind: containerapp
+location: koreasouth
+name: scheduler-job
+resourceGroup: guney-aks
+type: Microsoft.App/containerApps
+properties:
+  managedEnvironmentId: ${MANAGED_ENV_ID}
+  configuration:
+    activeRevisionsMode: Single
+    ingress:
+      external: true
+      targetPort: 8081
+      transport: auto
+      allowInsecure: false
+    registries:
+      - server: ghcr.io
+        username: ${GH_ACTOR}
+        passwordSecretRef: ghcr-password
+    secrets:
+      - name: ghcr-password
+        value: ${GH_TOKEN}
+  template:
+    containers:
+      - name: scheduler-job
+        image: ${IMAGE_TAG}
+        resources:
+          cpu: 0.5
+          memory: 1.0Gi
+        probes:
+          - type: Liveness
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          - type: Readiness
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 5
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: "prod"
+          - name: KAKAO_CLIENT_ID
+            value: "${KAKAO_CLIENT_ID}"
+          - name: KAKAO_CLIENT_SECRET
+            value: "${KAKAO_CLIENT_SECRET}"
+          - name: KAKAO_REFRESH_TOKEN
+            value: "${KAKAO_REFRESH_TOKEN}"
+          - name: KKAL_KKAL
+            value: "${KKAL_KKAL}"
+          - name: GRAFANA_TOKEN
+            value: "${GRAFANA_TOKEN}"
+    scale:
+      minReplicas: 1
+      maxReplicas: 2
+
