@@ -99,7 +99,7 @@ rest-api:
       baseUrl: https://kauth.kakao.com
       token: ${rest-api.kakao.auth.baseUrl}/oauth/token
   guney: 
-    baseUrl: https://xn--v69a93jfng.xn--hk3b17f.xn--3e0b707e
+    baseUrl: https://guney-api.kro.kr
   batch:
     baseUrl: https://guney-batch.kro.kr
 
@@ -159,6 +159,6 @@ rest-api:
       baseUrl: https://kauth.kakao.com
       token: ${rest-api.kakao.auth.baseUrl}/oauth/token
   guney: 
-    baseUrl: https://xn--v69a93jfng.xn--hk3b17f.xn--3e0b707e
+    baseUrl: https://guney-api.kro.kr
   batch:
     baseUrl: https://guney-batch.kro.kr
