@@ -1,12 +1,8 @@
 package com.app.kakao.service;
 
-import java.io.File;
-import java.nio.file.Files;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Value;
-
 import org.springframework.stereotype.Service;
 
 import com.app.common.constants.RestApiProperties;
@@ -21,28 +17,15 @@ import lombok.extern.slf4j.Slf4j;
 public class KakaoAlarmService {
 
     private final WebClientUtil webClientUtil;
-
     private final RestApiProperties restApiProperties;
-
-    @Value("${key.kakao.refreshToken}")
-    private String refreshToken;
-
-    @Value("${key.kakao.token-file-path:kakao-token.txt}")
-    private String tokenFilePath;
 
     // 7일마다 새벽 4시 실행
     public void scheduledTokenRefresh() {
         log.info("정기 카카오 토큰 자동 갱신 스케줄러 작동 시작");
-        String currentToken = loadRefreshToken();
-
-        if (currentToken == null || currentToken.trim().isEmpty()) {
-            log.warn("정기 카카오 토큰 자동 갱신 중단: 리프레시 토큰이 비어있음");
-            return;
-        }
 
         webClientUtil.postAsync(
                 restApiProperties.guney().baseUrl() + "/api/kakao/refresh-token",
-                Map.of("refreshToken", currentToken),
+                Map.of(),
                 Map.class
         ).subscribe(
                 res -> {
@@ -50,24 +33,11 @@ public class KakaoAlarmService {
 
                     if (ObjectUtils.isNotEmpty(res)) {
                         if (ObjectUtils.isNotEmpty(res.get("header")) && "BAD_REQUEST".equals(((Map<String, Object>) res.get("header")).get("code"))) {
-                            log.info("캐캬오 ERROR : {}", ((Map<String, Object>) res.get("header")).get("message"));
+                            log.warn("카카오 토큰 갱신 응답 오류: {}", ((Map<String, Object>) res.get("header")).get("message"));
                             return;
                         }
-
-                        if (ObjectUtils.isNotEmpty(res.get("data"))) {
-                            Map<String, Object> data = (Map<String, Object>) res.get("data");
-                            String newRefreshToken = (String) data.get("newRefreshToken");
-
-                            if (newRefreshToken != null && !newRefreshToken.isEmpty()) {
-                                saveRefreshToken(newRefreshToken);
-                            } else {
-                                log.info("새로운 리프레시 토큰이 발급되지 않아 저장 단계를 건너뜁니다.");
-                            }
-                        }
-                    } else {
-                        log.info("퍽킹 없는데 ???");
+                        log.info("카카오 토큰 자동 갱신 처리 완료");
                     }
-
                 },
                 err -> {
                     String errorMsg = String.format("정기 카카오 토큰 자동 갱신 실패: [%s] %s",
@@ -78,60 +48,13 @@ public class KakaoAlarmService {
                 });
     }
 
-    private String loadRefreshToken() {
-        try {
-            if (tokenFilePath != null && !tokenFilePath.trim().isEmpty()) {
-                File file = new File(tokenFilePath.trim());
-                if (file.exists()) {
-                    String fileToken = Files.readString(file.toPath()).trim();
-                    if (!fileToken.isEmpty()) {
-                        log.info("리프레시 토큰을 로드: {}", file.getAbsolutePath());
-                        return fileToken;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("loadRefreshToken ERROR : {}", e.getMessage());
-        }
-        log.info("설정 정보의 리프레시 토큰을 사용.");
-        return refreshToken != null ? refreshToken.trim() : "";
-    }
-
-    private void saveRefreshToken(String newToken) {
-        try {
-            if (tokenFilePath != null && !tokenFilePath.trim().isEmpty()) {
-                File file = new File(tokenFilePath.trim());
-                File parentDir = file.getParentFile();
-                if (parentDir != null && !parentDir.exists()) {
-                    parentDir.mkdirs();
-                }
-                Files.writeString(file.toPath(), newToken.trim());
-                log.info("리프레시 토큰 저장: {}", file.getAbsolutePath());
-            }
-        } catch (Exception e) {
-            log.error("리프레시 토큰 저장중 오류 발생: {}", e.getMessage());
-        }
-    }
-
     public void sendKakao(String msg) {
-        String currentToken = loadRefreshToken();
-        String safeToken = currentToken != null ? currentToken : "";
-
         webClientUtil.postAsync(
                 restApiProperties.guney().baseUrl() + "/api/kakao/send",
-                Map.of("msg", msg != null ? msg : "알림 내용 없음", "refreshToken", safeToken),
+                Map.of("msg", msg != null ? msg : "알림 내용 없음"),
                 Map.class
         ).subscribe(
-                res -> {
-                    log.info("카카오 알림 전송 성공");
-                    if (res != null && res.get("data") != null) {
-                        Map<String, Object> data = (Map<String, Object>) res.get("data");
-                        String newRefreshToken = (String) data.get("newRefreshToken");
-                        if (newRefreshToken != null && !newRefreshToken.isEmpty()) {
-                            saveRefreshToken(newRefreshToken);
-                        }
-                    }
-                },
+                res -> log.info("카카오 알림 전송 성공"),
                 err -> log.error("카카오 알림 전송 최종 실패: {}", err.getMessage()));
     }
-}
+}

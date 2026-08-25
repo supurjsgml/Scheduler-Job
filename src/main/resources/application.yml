@@ -39,14 +39,7 @@ jasypt:
 풀어-보거라:
   훌랠릴: 끄얼끄얼
   랠룰: 낄낄
-  
-key:
-  kakao:
-    clientId: 뭐게요
-    clientSecret: 뭘까
-    refreshToken: 궁굼하지롱
-    token-file-path: kakao-token.txt
-  
+
 ---
 
 spring:
@@ -57,14 +50,6 @@ spring:
 rest-api:
   heroku:
     baseUrl: https://api.heroku.com
-  kakao:
-    v2: /v2
-    api: 
-      baseUrl: https://kapi.kakao.com
-      memo: "${rest-api.kakao.api.baseUrl}${rest-api.kakao.v2}/api/talk/memo/default/send"
-    auth:
-      baseUrl: https://kauth.kakao.com
-      token: ${rest-api.kakao.auth.baseUrl}/oauth/token
   guney: 
     baseUrl: http://localhost:8080
   batch:
@@ -80,24 +65,9 @@ spring:
 server:
   port: ${port:8081}
 
-key:
-  kakao:
-    clientId: "${KAKAO_CLIENT_ID}"
-    clientSecret: "${KAKAO_CLIENT_SECRET}"
-    refreshToken: "${KAKAO_REFRESH_TOKEN}"
-    token-file-path: /home/ubuntu/scheduler-job/kakao-token.txt
-  
 rest-api:
   heroku:
     baseUrl: https://api.heroku.com
-  kakao:
-    v2: /v2
-    api: 
-      baseUrl: https://kapi.kakao.com
-      memo: "${rest-api.kakao.api.baseUrl}${rest-api.kakao.v2}/api/talk/memo/default/send"
-    auth:
-      baseUrl: https://kauth.kakao.com
-      token: ${rest-api.kakao.auth.baseUrl}/oauth/token
   guney: 
     baseUrl: https://guney-api.kro.kr
   batch:
@@ -113,13 +83,6 @@ spring:
 server:
   port: ${port:8081}
   
-key:
-  kakao:
-    clientId: "${KAKAO_CLIENT_ID}"
-    clientSecret: "${KAKAO_CLIENT_SECRET}"
-    refreshToken: "${KAKAO_REFRESH_TOKEN}"
-    token-file-path: /home/ubuntu/scheduler-job/kakao-token.txt
-  
 management:
   otlp:  
     metrics:  
@@ -133,7 +96,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus, health, info, threaddump, threads
+        include: prometheus, health, info, threads
   prometheus:
     metrics:
       export:
@@ -150,15 +113,7 @@ jasypt:
 rest-api:
   heroku:
     baseUrl: https://api.heroku.com
-  kakao:
-    v2: /v2
-    api: 
-      baseUrl: https://kapi.kakao.com
-      memo: "${rest-api.kakao.api.baseUrl}${rest-api.kakao.v2}/api/talk/memo/default/send"
-    auth:
-      baseUrl: https://kauth.kakao.com
-      token: ${rest-api.kakao.auth.baseUrl}/oauth/token
   guney: 
     baseUrl: https://guney-api.kro.kr
   batch:
-    baseUrl: https://guney-batch.kro.kr
+    baseUrl: https://guney-batch.kro.kr
