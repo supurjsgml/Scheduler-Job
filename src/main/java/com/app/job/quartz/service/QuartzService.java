@@ -115,9 +115,10 @@ public class QuartzService {
             triggerBuilder.withSchedule(CronScheduleBuilder.cronSchedule(cronExpression));
         } 
         
-        //interval이 있으면 fixedRate 트리거 생성
+        //interval이 있으면 fixedRate 트리거 생성 (첫 실행은 지정된 주기 뒤부터 시작)
         else if (intervalInMillis != null) {
-            triggerBuilder.withSchedule(org.quartz.SimpleScheduleBuilder.simpleSchedule()
+            triggerBuilder.startAt(new java.util.Date(System.currentTimeMillis() + intervalInMillis))
+                    .withSchedule(org.quartz.SimpleScheduleBuilder.simpleSchedule()
                     .withIntervalInMilliseconds(intervalInMillis)
                     .repeatForever());
         }

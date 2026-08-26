@@ -1,6 +1,7 @@
 package com.app.job.jobKorea.service;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,6 +73,9 @@ public class JobKoreaResumeUpdaterService {
 			options.addArguments("--disable-extensions"); // 확장 프로그램 비활성화
 			options.addArguments("--blink-settings=imagesEnabled=false"); // 이미지 로딩 방지
 			options.addArguments("--disable-software-rasterizer"); // 그래픽 처리 시 CPU 대체
+			options.addArguments("--disable-blink-features=AutomationControlled"); // 봇 탐지 우회
+			options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
+			options.setExperimentalOption("useAutomationExtension", false);
 			options.addArguments("--window-size=1920,1080"); // 창 크기 강제 설정
 			options.addArguments(
 					"--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36");

@@ -58,43 +58,36 @@ public class QuartzController {
 		HashMap<String, Object> result = new HashMap<>();
 
 		try {
-			// 난 저장소가 없어요
+			// 먼저 이력서 갱신 및 로그인 검증을 1회 실행
+			updater.updateResume(memberReqDTO);
+
+			// 검증 성공 시 메모리 유저 정보 등록 및 스케줄러 등록
 			jobKoreaRegistryService.registerUser(memberReqDTO);
 
 			String userId = memberReqDTO.getId();
-
 			Map<String, Object> jobDataMap = new HashMap<>();
 			jobDataMap.put("userId", userId);
 
-			// 유저용 잡 등록 최초 실행 기준으로 30분마다
+			// 유저용 잡 등록 (최초 실행은 30분 뒤부터)
 			quartzService.registerJob(userId, QuartzService.QUARTZ_GROUP_NAME, JobKoreaUserResumeJob.class, userId,
 					null, 30 * 60 * 1000L, jobDataMap);
-		} catch (SchedulerException e) {
-			log.error("JobKoreaRegistryService 잡등록 터졌어 ERROR : ");
-			e.printStackTrace();
-		}
-
-		try {
-			updater.updateResume(memberReqDTO);
 
 			// 토큰생성
 			memberReqDTO.setToken("test");
-
 			result.put("token", memberReqDTO.getToken());
 		} catch (Exception e) {
 			String errMsg = "서버에러 발생 관리자에게 문의해 주세요.";
 			String errCode = "500";
 
-			if (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element")
-					|| e.getMessage().contains("unexpected alert open")) {
+			if (e.getMessage() != null && (e.getMessage().contains("no such element") || e.getMessage().contains("Unable to locate element")
+					|| e.getMessage().contains("unexpected alert open"))) {
 				errCode = "9000";
 				errMsg = "로그인에 실패 하였습니다. 아이디 비밀번호를 확인해 주세요.";
 			}
 
 			result.put("errMsg", errMsg);
 			result.put("errCode", errCode);
-			log.error(e.getMessage());
-			e.getStackTrace();
+			log.error("로그인 및 이력서 갱신 실패 : {}", e.getMessage());
 		}
 
 		return result;
