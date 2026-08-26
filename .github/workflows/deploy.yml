@@ -73,15 +73,23 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Lowercase Repository Name
+        id: repo-name
+        run: echo "repo_lower=$(echo '${{ github.repository }}' | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Build and push Docker image
-        run: |
-          REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          IMAGE_TAG_SHA="ghcr.io/${REPO_LOWER}:${{ github.sha }}"
-          IMAGE_TAG_LATEST="ghcr.io/${REPO_LOWER}:latest"
-          
-          docker build -t "$IMAGE_TAG_SHA" -t "$IMAGE_TAG_LATEST" .
-          docker push "$IMAGE_TAG_SHA"
-          docker push "$IMAGE_TAG_LATEST"
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ steps.repo-name.outputs.repo_lower }}:${{ github.sha }}
+            ghcr.io/${{ steps.repo-name.outputs.repo_lower }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   # 소스 코드 변경이 있을 때: 2단계 - 관리자 승인 후 Azure 배포
   deploy:
