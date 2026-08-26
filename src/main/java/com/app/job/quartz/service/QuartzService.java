@@ -94,15 +94,17 @@ public class QuartzService {
     public void registerJob(String jobName, String group, Class<? extends Job> jobClass, String triggerName, String cronExpression, Long intervalInMillis, Map<String, Object> jobDataMap) throws SchedulerException {
     	
     	//job 생성
-    	JobBuilder jobBuilder = JobBuilder.newJob(jobClass).withIdentity(jobName, group);
-    	
-    	//생성될 job 정보 메모리에 보관
-        JobDetail jobDetail = jobBuilder.storeDurably().build();
+    	JobBuilder jobBuilder = JobBuilder.newJob(jobClass)
+    			.withIdentity(jobName, group)
+    			.storeDurably();
 
         //JobDataMap에 데이터가 있다면 SET
         if (ObjectUtils.isNotEmpty(jobDataMap)) {
             jobBuilder.usingJobData(new org.quartz.JobDataMap(jobDataMap));
         }
+
+        //생성될 job 정보 메모리에 보관
+        JobDetail jobDetail = jobBuilder.build();
 
         TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger()
                 .forJob(jobDetail)
