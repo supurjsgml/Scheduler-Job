@@ -46,6 +46,12 @@ properties:
             value: "${KKAL_KKAL}"
           - name: GRAFANA_TOKEN
             value: "${GRAFANA_TOKEN}"
+          - name: LOKI_USER
+            value: "${LOKI_USER}"
+          - name: LOKI_TOKEN
+            value: "${LOKI_TOKEN}"
+          - name: AXIOM_TOKEN
+            value: "${AXIOM_TOKEN}"
     scale:
       minReplicas: 1
       maxReplicas: 2

@@ -116,4 +116,18 @@ rest-api:
   guney: 
     baseUrl: https://guney-api.kro.kr
   batch:
-    baseUrl: https://guney-batch.kro.kr
+    baseUrl: https://guney-batch.kro.kr
+
+logging:
+  loki:
+    url: https://logs-prod-030.grafana.net/loki/api/v1/push
+    user: ${LOKI_USER:}
+    token: ${LOKI_TOKEN:}
+  axiom:
+    api-url: https://api.axiom.co/v1/datasets/
+    dataset: scheduler-job
+    token: ${AXIOM_TOKEN:}
+    app: scheduler-job
+    batch-size: 50
+    flush-interval-ms: 1000
+    max-queue-size: 2048

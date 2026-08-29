@@ -113,6 +113,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           KKAL_KKAL: ${{ secrets.KKAL_KKAL }}
           GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+          LOKI_USER: ${{ secrets.LOKI_USER }}
+          LOKI_TOKEN: ${{ secrets.LOKI_TOKEN }}
+          AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
         run: |
           REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           export IMAGE_TAG="ghcr.io/${REPO_LOWER}:${{ github.sha }}"
@@ -155,6 +158,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           KKAL_KKAL: ${{ secrets.KKAL_KKAL }}
           GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
+          LOKI_USER: ${{ secrets.LOKI_USER }}
+          LOKI_TOKEN: ${{ secrets.LOKI_TOKEN }}
+          AXIOM_TOKEN: ${{ secrets.AXIOM_TOKEN }}
         run: |
           REPO_LOWER=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           export IMAGE_TAG="ghcr.io/${REPO_LOWER}:${{ github.sha }}"

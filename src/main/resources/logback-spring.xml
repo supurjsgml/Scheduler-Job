@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
+
+    <!-- 콘솔 Appender -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 로컬 개발 환경: 애플리케이션 코드는 DEBUG, 프레임워크는 INFO로 설정 -->
+    <springProfile name="!prod">
+        <logger name="com.app" level="DEBUG" />
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+    <!-- 운영 환경(prod): 콘솔 + Grafana Loki + Axiom 듀얼 전송 활성화 -->
+    <springProfile name="prod">
+        <springProperty scope="context" name="LOKI_URL" source="logging.loki.url" defaultValue="https://logs-prod-030.grafana.net/loki/api/v1/push"/>
+        <springProperty scope="context" name="LOKI_USER" source="logging.loki.user" defaultValue="${LOKI_USER:}"/>
+        <springProperty scope="context" name="LOKI_TOKEN" source="logging.loki.token" defaultValue="${LOKI_TOKEN:}"/>
+
+        <springProperty scope="context" name="AXIOM_API_URL" source="logging.axiom.api-url" defaultValue="https://api.axiom.co/v1/datasets/"/>
+        <springProperty scope="context" name="AXIOM_DATASET" source="logging.axiom.dataset" defaultValue="scheduler-job"/>
+        <springProperty scope="context" name="AXIOM_TOKEN" source="logging.axiom.token" defaultValue="${AXIOM_TOKEN:}"/>
+        <springProperty scope="context" name="AXIOM_APP" source="logging.axiom.app" defaultValue="scheduler-job"/>
+        <springProperty scope="context" name="AXIOM_BATCH_SIZE" source="logging.axiom.batch-size" defaultValue="50"/>
+        <springProperty scope="context" name="AXIOM_FLUSH_INTERVAL_MS" source="logging.axiom.flush-interval-ms" defaultValue="1000"/>
+        <springProperty scope="context" name="AXIOM_MAX_QUEUE_SIZE" source="logging.axiom.max-queue-size" defaultValue="2048"/>
+
+        <!-- Grafana Loki 비동기 전송 Appender -->
+        <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+            <http>
+                <url>${LOKI_URL}</url>
+                <auth>
+                    <username>${LOKI_USER}</username>
+                    <password>${LOKI_TOKEN}</password>
+                </auth>
+            </http>
+            <format>
+                <label>
+                    <pattern>app=scheduler-job,replica=${CONTAINER_APP_REPLICA_NAME:-unknown},level=%level</pattern>
+                </label>
+                <message>
+                    <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                </message>
+            </format>
+        </appender>
+
+        <!-- Axiom 비동기 JSON 배치 전송 Appender -->
+        <appender name="AXIOM" class="com.app.common.logging.AxiomAppender">
+            <apiUrl>${AXIOM_API_URL}</apiUrl>
+            <dataset>${AXIOM_DATASET}</dataset>
+            <token>${AXIOM_TOKEN}</token>
+            <app>${AXIOM_APP}</app>
+            <batchSize>${AXIOM_BATCH_SIZE}</batchSize>
+            <flushIntervalMs>${AXIOM_FLUSH_INTERVAL_MS}</flushIntervalMs>
+            <maxQueueSize>${AXIOM_MAX_QUEUE_SIZE}</maxQueueSize>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="LOKI" />
+            <appender-ref ref="AXIOM" />
+        </root>
+    </springProfile>
+
+</configuration>
