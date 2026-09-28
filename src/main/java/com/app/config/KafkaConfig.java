@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
-import org.springframework.kafka.support.converter.JsonMessageConverter;
+import org.springframework.kafka.support.converter.JacksonJsonMessageConverter;
 import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.util.backoff.FixedBackOff;
 
@@ -15,7 +15,7 @@ public class KafkaConfig {
 	
     @Bean
     public RecordMessageConverter converter() {
-        return new JsonMessageConverter(); //파라미터 타입을 보고 알잘딱으로 변환
+        return new JacksonJsonMessageConverter(); //파라미터 타입을 보고 알잘딱으로 변환
     }
     
     @Bean

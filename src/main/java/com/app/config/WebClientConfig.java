@@ -3,6 +3,7 @@ package com.app.config;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +20,8 @@ import reactor.netty.http.client.HttpClient;
 public class WebClientConfig {
 
 	@Bean
-    WebClient webClient(WebClient.Builder builder) {
+    WebClient webClient(ObjectProvider<WebClient.Builder> builderProvider) {
+        WebClient.Builder builder = builderProvider.getIfAvailable(WebClient::builder);
         
         //커넥션 풀 및 타임아웃 상세 설정
         HttpClient httpClient = HttpClient.create()
