@@ -12,13 +12,7 @@ properties:
       targetPort: 8081
       transport: auto
       allowInsecure: false
-    registries:
-      - server: ghcr.io
-        username: ${GH_ACTOR}
-        passwordSecretRef: ghcr-password
-    secrets:
-      - name: ghcr-password
-        value: ${GH_TOKEN}
+    registries: []
   template:
     containers:
       - name: scheduler-job

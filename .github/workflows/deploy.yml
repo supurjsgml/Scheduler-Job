@@ -109,8 +109,6 @@ jobs:
 
       - name: Deploy to Azure Container Apps
         env:
-          GH_ACTOR: ${{ github.actor }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           KKAL_KKAL: ${{ secrets.KKAL_KKAL }}
           GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
           LOKI_USER: ${{ secrets.LOKI_USER }}
@@ -154,8 +152,6 @@ jobs:
 
       - name: Restart Azure Container App
         env:
-          GH_ACTOR: ${{ github.actor }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           KKAL_KKAL: ${{ secrets.KKAL_KKAL }}
           GRAFANA_TOKEN: ${{ secrets.GRAFANA_TOKEN }}
           LOKI_USER: ${{ secrets.LOKI_USER }}
